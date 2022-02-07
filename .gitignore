@@ -1,4 +1,11 @@
-*.sqlite3
 
 tui.calendar/
+node_modules/
 
+# Django stuff:
+db.sqlite3
+
+# mypy
+
+package.json
+package-lock.json
