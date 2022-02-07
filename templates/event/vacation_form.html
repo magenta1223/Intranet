@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-3">
+    <!-- 여기서 이벤트를 작성할거임
+     일단.. 작성자가 컨트롤 가능한.. 씨발..이건 배보다 배꼽이 더 큰..
+     관리자는 누구에게 할당할지 정할 수 있다.
+     -->
+    <h5 class="border-bottom pb-2"> 휴가 신청서 status name user </h5>
+    <form method="post" class="post-form my-3">
+        {% csrf_token %}
+        {% include "form_errors.html" %}
+        <div class="form-group">
+            <label for="name"> 휴가명 </label>
+            <input type="text" class="form-control" name="name" id="name"
+                   value="{{ form.name.value|default_if_none:'' }}">
+
+        </div>
+
+        <div class="form-group">
+            <label for="start">시작일자</label>
+            <input type="date" class="form-control" name="start" id="start"
+                   value="{{ form.start.value|default_if_none:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="end">종료일자</label>
+            <input type="date" class="form-control" name="end" id="end"
+                   value="{{ form.end.value|default_if_none:'' }}">
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">저장하기</button>
+    </form>
+</div>
+{% endblock %}

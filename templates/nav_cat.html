@@ -1,0 +1,52 @@
+<!-- 네비게이션 바 -->
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'landing' %}"> 가구랑나랑 </a>
+    <!-- 접기버튼 -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- 클릭 시 드롭다운 -->
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+
+            <!-- 카테고리를 받아와서 생성하자 ! -->
+            {% if categories %}
+            {% for category in categories %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'bulletinboard:cat_index' category %}"> {{category}} <span class="sr-only"></span></a>
+            </li>
+            {% endfor %}
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'task:index' %}"> 견적서 <span class="sr-only"></span></a>
+            </li>
+
+
+            <!-- 게시판 내 드롭다운 -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">견적서</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="#">책상</a>
+                    <a class="dropdown-item" href="#">의자</a>
+                    <a class="dropdown-item" href="#">의자1</a>
+                    <a class="dropdown-item" href="#">책상1</a>
+                </div>
+            </li>
+        </ul>
+        <ul class="navbar-nav" style = "margin-left: auto !important;">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'common:profile' %}">{{ user.name }} 프로필</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'common:logout' %}">로그아웃</a>
+            </li>
+            {% else %}
+            <li>
+                <a class="nav-link" href="{% url 'common:login' %}">로그인</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

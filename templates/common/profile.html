@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+    <h2 class="border-bottom py-2"> 사용자 프로필 </h2>
+    <h4 class="border-bottom py-2"> 프로필 사진 </h4>
+    <!--<div class="card my-3">
+        <div class="card-body">
+
+            <img src="{{ user.image }}" alt="My Image">
+        </div>
+    </div> -->
+
+    <h4 class="border-bottom py-2"> 이메일 / ID </h4>
+    <div class="card my-3"> <!-- card style from bootstrap -->
+        <div class="card-body"> <!-- div에 스타일 적용 -->
+            <!-- post 내용 -->
+            <div class="card-text"> {{user.email}}</div>
+        </div>
+    </div>
+    <h4 class="border-bottom py-2"> 이름 </h4>
+    <div class="card my-3"> <!-- card style from bootstrap -->
+        <div class="card-body"> <!-- div에 스타일 적용 -->
+            <!-- post 내용 -->
+            <div class="card-text"> {{user.name}} </div>
+        </div>
+    </div>
+    <h4 class="border-bottom py-2"> 생년월일 </h4>
+    <div class="card my-3"> <!-- card style from bootstrap -->
+        <div class="card-body"> <!-- div에 스타일 적용 -->
+            <!-- post 내용 -->
+            <div class="card-text"> {{user.date_of_birth}}</div>
+        </div>
+    </div>
+    <h4 class="border-bottom py-2"> 나의 일정표 </h4>
+    <div class="card my-3"> <!-- card style from bootstrap -->
+        <div class="card-body"> <!-- div에 스타일 적용 -->
+            <!-- post 내용 -->
+            <div id='calendar'>
+                <button id = "vacation_request"  class="btn btn-primary" onclick = "location.href = '{% url 'common:vacation_request' %}'"  > 휴가 신청 </button>
+            </div>
+
+        </div>
+
+        <a href="{% url 'toast_calendar' %}" class="btn btn-primary"> 프로필 수정하기</a>
+
+
+    </div>
+    {% if user.is_superuser %}
+    <a class="btn btn-primary" disabled>관리자는 프로필을 수정할 수 없습니다.</a>
+    {% else %}
+    <a href="{% url 'common:profile_modify' %}" class="btn btn-primary"> 프로필 수정하기</a>
+    {% endif %}
+</div>
+{% endblock %}

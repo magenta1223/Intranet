@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+select:invalid { color: gray; }
+</style>
+
+<div class="container">
+    <h5 class="my-3 border-bottom pb-2">사용자 프로필 수정</h5>
+    <!-- 원래 form에는 action을 명시해주어야 하는데, 그렇게 하면 수정할 때는 이 템플릿을 못씀.
+     비워놓으면 두 가지 경우에 모두 쓸수가 있다고 한다. 속성 미지정시 현재 url이 기본값으로 설정됨
+     즉, question_create가 설정된 상태-->
+
+    <form method="post" class="post-form my-3", id = "usermodify">
+        {{form.media}}
+
+        {% csrf_token %}
+        <!-- form.as_p는 QuestionForm 객체. 이는 폼에서 정의한 field에 해당하는 html 태그를 자동으로 생성 -->
+        <!-- 오류표시 Start -->
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+                {% if field.errors %}
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+            </div>
+        {% endif %}
+        <!-- 오류표시 End -->
+        <!-- 카테고리 표시 -->
+        <div class="form-group">
+            <label for="email">이메일 / ID</label>
+            <input type="text" class="form-control" name="email" id="email" value="{{ user.email}}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" class="form-control" name="name" id="name"
+                   value="{{ user.name }}">
+        </div>
+        <div class="form-group">
+            <label for="date_of_birth">생년월일</label>
+            <input type="date" class="form-control" name="date_of_birth" id="date_of_birth"
+                   value="{{ user.date_of_birth }}">
+        </div>
+        <div class="form-group">
+            <input type="hidden" class="form-control" name="is_active" id="is_active"
+                   value="{{ user.is_active }}">
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">저장하기</button>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+
+$('#usermodify').submit(function(){
+    $("#usermodify :disabled").removeAttr('disabled');
+});
+
+</script>
+{% endblock %}

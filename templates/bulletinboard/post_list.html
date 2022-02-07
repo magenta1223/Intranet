@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load bulletinboard_filter %}
+{% block content %}
+
+<!-- ㅇ -->
+
+<div class="container my-3">
+    <!-- 검색기능 -->
+    <div class="row justify-content-end my-3">
+        <div class="col-4 input-group">
+            <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 테이블 시작 -->
+    <table class="table">
+        <!-- 테이블 헤드 -->
+        <thead>
+        <tr class="thead-dark">
+            <th>번호</th>
+            <th style="width:50%">제목</th>
+            <th>글쓴이</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!-- 질문 목록이 있다면 -->
+        {% if post_list %}
+        <!-- 각 질문에 대해서 -->
+        {% for post in post_list %}
+        <!-- row를 설정하고 -->
+        <tr class="text-center">
+            <!-- 정보 표시 시작 -->
+            <!-- 번호 표시 -->
+            <td>
+                <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
+                {{ post_list.paginator.count|sub:post_list.start_index|sub:forloop.counter0|add:1 }}
+            </td>
+            <!-- bulletinboard의 urls에서 detail을 실행, post_id를 인수로 넣음
+            post.subject를 출력-->
+            <td class="text-left">
+                <a href="{% url 'bulletinboard:detail' post.wrapper.id %}">{{ post.title }}</a>
+                {% if post.reply_set.count > 0 %}
+                <span class="text-danger small ml-2">{{ post.reply_set.count }}</span>
+                {% endif %}
+            </td>
+            <!-- 글쓴이 표시 -->
+            <td>{{ post.author.name }}</td>  <!-- 글쓴이 추가 -->
+            <!-- 작성일자 표시 -->
+            <td>{{ post.create_date }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">게시글이 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    <!-- 페이징처리 시작 -->
+    <ul class="pagination justify-content-center">
+        <!-- 이전페이지 -->
+        {% if post_list.has_previous %}
+        <li class="page-item">
+            <!-- a -->
+            <a class="page-link" data-page="{{ post_list.previous_page_number }}" href="#">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+        <!-- 페이지리스트 -->
+        {% for page_number in post_list.paginator.page_range %}
+        {% if page_number >= post_list.number|add:-5 and page_number <= post_list.number|add:5 %}
+            {% if page_number == post_list.number %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            </li>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+        <!-- 다음페이지 -->
+        {% if post_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ post_list.next_page_number }}" href="#">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+    <!-- 페이징처리 끝 -->
+    <a href="{% url 'bulletinboard:post_create' %}" class="btn btn-primary">게시글 등록하기</a>
+</div>
+
+<!-- page와 kw를 동시에 get으로 요청 가능한 searchform
+ cat_index로 바꺼야 .  ?-->
+<form id="searchForm" method="get" action="{% url 'index' %}">
+    <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
+    <input type="hidden" id="page" name="page" value="{{ page }}">
+</form>
+
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".page-link").on('click', function() {
+        $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+
+    $("#btn_search").on('click', function() {
+        $("#kw").val($(".kw").val());
+        $("#page").val(1);  // 검색버튼을 클릭할 경우 1페이지부터 조회한다.
+        $("#searchForm").submit();
+    });
+});
+</script>
+{% endblock %}

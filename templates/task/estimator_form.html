@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="container">
+    <h5 class="my-3 border-bottom pb-2"> 장 견적서 작성하기 </h5>
+    <form method="post" class="post-form my-3" id = "form123">
+        {{form.media}}
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+                {% if field.errors %}
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="type">type</label>
+            <select class="form-control" name="type" id="type" aria-label=".form-select-lg example" required>
+                <option value= "" disabled selected hidden>type select</option>
+                {% for type in types%}
+                <option value= {{type}}>{{type}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="customer">고객사</label>
+            <input type="text" class="form-control" name="customer" id="customer">
+        </div>
+
+        <!-- 카테고리 표시 -->
+        <div class="form-group">
+            <label for="width">width</label>
+            <input type="number" class="form-control" name="width" id="width" value="1200" min="1" max="2400">
+        </div>
+        <div class="form-group">
+            <label for="depth">depth</label>
+            <input type="number" class="form-control" name="depth" id="depth" rows="10" value="400" min="1" max="800">
+        </div>
+        <div class="form-group">
+            <label for="height">height</label>
+            <input type="number"class="form-control" name="height" id="height" rows="10" value="1900" min="1" max="2400">
+        </div>
+
+        <div class="form-group">
+            <label for="num_shelves">num_shelves</label>
+            <input type="number" class="form-control" name="num_shelves" id="num_shelves" rows="10" value="5" min="1" max="10">
+        </div>
+
+        <div class="form-group">
+            <label for="num_vertical_bar">num_vertical_bar</label>
+            <input type="number" class="form-control" name="num_vertical_bar" id="num_vertical_bar" rows="10" value="0" min="0" max="4">
+        </div>
+
+        <div class="form-group">
+            <label for="num_doors">num_doors</label>
+            <input type="number" class="form-control" name="num_doors" id="num_doors" rows="10" value="0" min="0" max="4">
+        </div>
+
+
+        <button type="submit" id = "submit"  class="btn btn-primary">견적서 작성하기</button>
+        <button type="button" id = "add-button" class="btn btn-info">추가 항목 작성 &nbsp;<span style="font-size:16px; font-weight:bold;">+ </span></button>
+    </form>
+
+
+
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+
+
+var x = 1;
+
+$('#add-button').click(function() {
+    var wrapper = $('#form123')
+    var structure = $('<div class="form-group"><label for = "additional_' + x + '">추가항목 ' + x + '</label><br/><div style = "width: 20%;float:left;">항목 이름 &nbsp;: &nbsp;&nbsp;</div><input class="form-control" type="text" style = "width:auto;" name="additional_key' + x + '"><br/><div style = "width: 15%;float:left;"> 가격 &nbsp;: &nbsp;&nbsp;</div><input class="form-control" type="text" style = "width: auto;" name="additional_val' + x +  '"><br><a href="#" class="delete" id = "delete'+x+'">삭제</a></div>');
+    var submit_btn = $('#submit')
+
+    $(submit_btn).before(structure);
+
+    x++;
+    //off 안하면 페이지 안에서의 누적클릭횟수만큼 반복해서 발생함
+    $(wrapper).off().on("click", ".delete", function(e) {
+        e.preventDefault();
+        $(this).parent('div').remove();
+        x--;
+    });
+
+});
+
+
+
+</script>
+{% endblock %}
