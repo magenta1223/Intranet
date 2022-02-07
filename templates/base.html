@@ -55,7 +55,7 @@
                     title: "{{event.name}}",
                     start: '{{event.start}}',
                     end: '{{event.end}}',
-                    allDay : true
+                    allDay : {{event.allday}},
                     },
                 {% endfor %}
                 {% for event in tasks %}
@@ -66,9 +66,12 @@
                     title: "{{ event.name}}",
                     start: '{{ event.start }}',
                     end: '{{ event.end}}',
+                    allDay : {{event.allday}}
                     },
                 {% endfor %}
-                ]
+                ],
+                eventOverlap: false
+
             });
 
         calendar.render();

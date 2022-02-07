@@ -9,6 +9,8 @@ def reformat(events, vacation = False):
             event_sub_arr['end'] = event.end.strftime("%Y-%m-%d %H:%M:%S")
             event_sub_arr['id'] = event.status if int(event.status) > 0 else '0'
             event_sub_arr['color'] = event.color
+            event_sub_arr['allday'] = event.allday
+            print(event_sub_arr['allday'])
             reforatted.append(event_sub_arr)
     else:
         for event in events:
@@ -18,6 +20,9 @@ def reformat(events, vacation = False):
             event_sub_arr['end'] = event.end.strftime("%Y-%m-%d %H:%M:%S")
             event_sub_arr['id'] = event.config.id
             event_sub_arr['color'] = event.config.color
+            event_sub_arr['allday'] = event.allday
+            print(event_sub_arr['allday'])
+
             reforatted.append(event_sub_arr)
     return reforatted
 

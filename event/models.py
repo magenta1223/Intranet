@@ -25,6 +25,17 @@ class Event(models.Model):
         # 비교
         return self.start < now < self.end
 
+    @property
+    def allday(self):
+        """
+        12시 넘으면 allday임
+        :return:
+        """
+        if self.end.date() - self.start.date():
+            return 'true'
+        else:
+            return 'false'
+
 class VacationConfig(models.Model):
     """
     Configuration for
