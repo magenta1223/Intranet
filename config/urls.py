@@ -41,7 +41,6 @@ urlpatterns = [
     path('common/', include('common.urls')),
     path('task/', include('task.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('vacation/', event_views.toast_calendar, name = 'toast_calendar'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = i18n_patterns(*urlpatterns, prefix_default_language=False)

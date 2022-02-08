@@ -52,7 +52,7 @@ def vacation_request(request):
             vacation = form.save(commit=False)
             vacation.author = request.user
             user = User.objects.get(id = request.user.id)
-            vacation.status = 'requested'
+            vacation.status = '1' # for requested
             vacation.name = str(request.user) + '_휴가'
             vacation.create_date = timezone.now()
 
