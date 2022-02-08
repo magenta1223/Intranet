@@ -121,7 +121,7 @@ class Task(Event):
     signature = models.ImageField(null = True, blank= True)
 
     def __str__(self):
-        return self.name
+        return f'[{self.config.name}] {self.name}'
 
     class Meta:
         verbose_name = '업무'

@@ -25,6 +25,7 @@
     <link href='/static/main.css' rel='stylesheet' />
     <script src='/static/main.js'></script>
 
+
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
@@ -52,25 +53,32 @@
                     groupId : "{{event.id}}",
                     backgroundColor: '{{event.color}}',
                     borderColor : '{{event.color}}',
-                    title: "{{event.name}}",
+                    title: "{{event.title}}",
                     start: '{{event.start}}',
                     end: '{{event.end}}',
                     allDay : {{event.allday}},
+                    overlap : 'false'
                     },
                 {% endfor %}
                 {% for event in tasks %}
                     {
+
+
                     groupId : "{{event.id}}",
                     backgroundColor: '{{event.color}}',
                     borderColor : '{{event.color}}',
-                    title: "{{ event.name}}",
+                    title: "{{ event.title}}",
                     start: '{{ event.start }}',
                     end: '{{ event.end}}',
-                    allDay : {{event.allday}}
+                    allDay : {{event.allday}},
+                    overlap : 'false'
+
                     },
                 {% endfor %}
                 ],
-                eventOverlap: false
+                slotEventOverlap : false,
+                displayEventTime: false
+
 
             });
 
