@@ -69,15 +69,17 @@ class Vacation(Event):
     def __str__(self):
         return self.name
 
-    @property
     def color(self):
-        if self.is_active:
-            if self.status == '1':
-                return '#BDE3DD'
-            elif self.status == '2':
-                return '#03BD9E'
-            else:
-                return '#FF4040'
+        """
+        1)
+        :return:
+        """
+        if self.status == '1':
+            return '#BDE3DD'
+        elif self.status == '2':
+            return '#03BD9E'
+        elif self.status == '3':
+            return '#FF4040'
         else:
             return '#DCDCDC'
 
