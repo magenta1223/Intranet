@@ -55,7 +55,6 @@ def vacation_request(request):
             vacation.status = 'requested'
             vacation.name = str(request.user) + '_휴가'
             vacation.create_date = timezone.now()
-            vacation.config = VacationConfig.objects.get(id = 1)
 
             vacation.save()
 
@@ -73,5 +72,4 @@ def vacation_request(request):
         return render(request, 'event/vacation_form.html', context)
 
 
-def toast_calendar(request):
-    return render(request, 'event/vacation.html')
+
