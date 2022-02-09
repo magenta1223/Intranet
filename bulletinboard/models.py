@@ -2,7 +2,8 @@ from django.db import models
 from django.conf import settings
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
-
+from django.utils import timezone
+from datetime import datetime, timedelta
 # Create your models here.
 
 class Category(models.Model):
@@ -56,6 +57,18 @@ class Post(models.Model):
         # 복수형 저장. 관리자페이지에서 이 이름으로 보인다
         verbose_name = '게시글'
         verbose_name_plural = '게시글'
+
+    @property
+    def formatted_date(self):
+
+        date = self.modify_date if self.modify_date is not None else self.create_date
+
+
+        if timezone.now().astimezone().date() == date.astimezone().date():
+            return date.astimezone().strftime('%H:%M')
+        else:
+            return date.astimezone().strftime('%Y-%m-%d')
+
 
 # admin / 소주맥주123
 

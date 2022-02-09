@@ -50,23 +50,28 @@ class Level(models.Model):
 
 class UserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, name, password=None):
-        """지정된 email, data_of_birth로 사용자를 생성하고 저장한다."""
+        """
+        이게.. manage.py로 사용자 생성할 때나 사용되고, 폼 제출에서 생성하는 로직과는 아무상관이 없다
+        보통은 커맨드로 생성하지 않으므로 거의 관리자 전용이라고 생각하면 됨.
+        지정된 email, data_of_birth로 사용자를 생성하고 저장한다.
+        """
         if not email:
             # 사용자 email이 없을때
             raise ValueError('Users must have an email address')
+
+        levels = Level.objects.all()
+        level = levels.filter(
+            Q(level__icontains='Dummy')).distinct()[0]
 
         user = self.model(
             email=self.normalize_email(email),
             date_of_birth = date_of_birth,
             name = name,
+            create_date = timezone.now(),
+            level = level
         )
 
-        levels = Level.objects.all()
-        level = levels.filter(
-            Q(level__icontains='Dummy')).distinct()[0]
-        user.level = level
         user.set_password(password)
-        user.create_date = timezone.now()
 
         user.save(using=self._db)
 
@@ -94,7 +99,7 @@ class UserManager(BaseUserManager):
             level = levels.filter(
                 Q(level__icontains='Admin')).distinct()[0]
         user = self.create_user(
-            email,
+            email = email,
             password=password,
             date_of_birth = date_of_birth,
             name = name,

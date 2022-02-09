@@ -2,6 +2,7 @@
 from django.db import models
 from django.conf import settings
 from picklefield.fields import PickledObjectField
+from django.utils import timezone
 
 class Estimator(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name= '작성자',on_delete=models.CASCADE, null=True) # on_delete : 계정 삭제 시 작성 질문 모두 삭제
@@ -20,6 +21,18 @@ class Estimator(models.Model):
     class Meta:
         verbose_name_plural = '견적서'
         verbose_name = '견적서'
+
+    @property
+    def formatted_date(self):
+
+        date = self.modify_date if self.modify_date is not None else self.create_date
+
+
+        if timezone.now().astimezone().date() == date.astimezone().date():
+            return date.astimezone().strftime('%H:%M')
+        else:
+            return date.astimezone().strftime('%Y-%m-%d')
+
 
 
 class EstimatorType(models.Model):

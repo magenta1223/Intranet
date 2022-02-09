@@ -21,9 +21,8 @@
         <thead>
         <tr class="thead-dark" align = "center">
             <th>번호</th>
-            <th style="width:50%">제목</th>
-            <th>글쓴이</th>
-            <th>작성일시</th>
+            <th style="width:90%">제목</th>
+
         </tr>
         </thead>
         <tbody>
@@ -36,7 +35,7 @@
         <tr class="text-center">
             <!-- 정보 표시 시작 -->
             <!-- 번호 표시 -->
-            <td>
+            <td style = "text-align: center;vertical-align : middle;">
                 <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
                 {{ estimator_list.paginator.count|sub:estimator_list.start_index|sub:forloop.counter0|add:1 }}
             </td>
@@ -44,15 +43,15 @@
             post.subject를 출력-->
             <td class="text-left">
                 <a href="{% url 'task:detail' estimator.wrapper.id %}">{{ estimator.name }}</a>
-                {% if estimator.reply_set.count > 0 %}
-                <span class="text-danger small ml-2">{{ estimator.reply_set.count }}</span>
+                {% if estimator.wrapper.reply_set.count > 0 %}
+                <span class="text-danger small ml-2">{{ estimator.wrapper.reply_set.count }}</span>
                 {% endif %}
+                <br>
+                <small>{{ estimator.author.name }} | {{ estimator.formatted_date }}</small>
             </td>
-            <!-- 글쓴이 표시 -->
-            <td>{{ estimator.author.name }}</td>  <!-- 글쓴이 추가 -->
-            <!-- 작성일자 표시 -->
-            <td>{{ estimator.create_date }}</td>
         </tr>
+
+
         {% endfor %}
         {% else %}
         <tr>

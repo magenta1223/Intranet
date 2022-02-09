@@ -19,18 +19,15 @@ class Event(models.Model):
     create_date = models.DateTimeField(null = True,  blank=True)
     modify_date = models.DateTimeField(null = True,  blank=True)
 
+    description = models.TextField(null = True, blank = True)
+
     @property
     def is_active(self):
         now = timezone.now()
-        # 비교
         return self.start < now < self.end
 
     @property
     def allday(self):
-        """
-        12시 넘으면 allday임
-        :return:
-        """
         if self.end.date() - self.start.date():
             return 'true'
         else:
@@ -98,6 +95,10 @@ class TaskConfig(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = '업무 종류'
+        verbose_name_plural = '업무 종류'
 
 
 class Task(Event):

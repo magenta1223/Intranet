@@ -50,10 +50,12 @@ def vacation_request(request):
         form = VacationForm(request.POST)
         if form.is_valid():
             vacation = form.save(commit=False)
+
+            print(vacation.description)
             vacation.author = request.user
             user = User.objects.get(id = request.user.id)
             vacation.status = '1' # for requested
-            vacation.name = str(request.user) + '_휴가'
+            vacation.name = f'{request.user.name} 휴가'
             vacation.create_date = timezone.now()
 
             vacation.save()

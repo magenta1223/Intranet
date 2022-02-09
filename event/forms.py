@@ -13,7 +13,7 @@ class VacationForm(forms.ModelForm):
 
     class Meta:
         model = Vacation
-        fields = ['name', 'start','end', 'status', 'users', 'author']
+        fields = ['name', 'start','end', 'status', 'users', 'author', 'description']
 
     # Add the users field.
     users = forms.ModelMultipleChoiceField(
