@@ -58,6 +58,8 @@ def vacation_request(request):
             vacation.name = f'{request.user.name} 휴가'
             vacation.create_date = timezone.now()
 
+            print(vacation.start, vacation.end)
+
             vacation.save()
 
             # manytomany에 저장하려면 두 객체가 모두 저장되어 있어야 한다.
