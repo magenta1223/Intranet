@@ -24,7 +24,7 @@ def reformat(events, vacation = False):
             event_sub_arr['start'] = event.start.strftime("%Y-%m-%d %H:%M:%S")
             event_sub_arr['end'] = event.end.strftime("%Y-%m-%d %H:%M:%S")
             event_sub_arr['id'] = event.config.id
-            event_sub_arr['color'] = event.config.color()
+            event_sub_arr['color'] = event.config.color
             event_sub_arr['allday'] = event.allday
             event_sub_arr['description'] = str(event.description)
             print(event_sub_arr['description'])
