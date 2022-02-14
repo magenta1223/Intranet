@@ -13,21 +13,40 @@ from django.db.models import Q
 from django.contrib import messages
 from django.utils import timezone
 from event.utils import *
+from django.http import JsonResponse, HttpResponse
+
+import json
+
 
 @login_required(login_url='common:login')
 def profile(request):
     """
     계정생성
     """
-
     user = request.user
     categories = Category.objects.all()  # 전체 카테고리
 
+    vacations = []
+
+    '#DCDCDC' # 회색. 지나감
+    '#BDE3DD' # 연한 초록색. 승인 대기중
+    '#03BD9E' # 승인
+    '#FF4040' # 반려
+
+    color_dict = { config.name : config.color for i, config in enumerate(TaskConfig.objects.all())}
+
+    color_dict['지나간 휴가'] = '#DCDCDC'  # 회색. 지나감
+    color_dict['승인 대기중인 휴가'] = '#BDE3DD'  # 연한 초록색. 승인 대기중
+    color_dict['예정된 휴가'] = '#03BD9E'  # 승인
+    color_dict['반려된 휴가'] = '#FF4040'  # 반려
+
+    color_dict_json = json.dumps(color_dict)
 
 
     # 휴가는 작성자가 본인임
     vacations = Vacation.objects.filter(
         Q(author__id__iexact=user.id)
+
     )
 
     tasks = Task.objects.filter(
@@ -39,7 +58,7 @@ def profile(request):
     tasks_reforatted = reformat(tasks)
 
 
-    context = {'user' : user , 'categories' : categories, 'categories' : categories, 'vacations' : vacations_reforatted, 'tasks': tasks_reforatted}
+    context = {'user' : user , 'categories' : categories, 'vacations' : vacations_reforatted, 'tasks': tasks_reforatted, 'color_dict' : color_dict, 'color_dict_json' : color_dict_json}
 
 
     return render(request, 'common/profile.html', context)

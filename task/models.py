@@ -10,8 +10,8 @@ class Estimator(models.Model):
     modify_date = models.DateTimeField(verbose_name= '수정일자',null=True, blank=True)
 
 
-    type = models.CharField(max_length= 30)
-    name = models.CharField(max_length= 200, null=True)
+    type = models.CharField(verbose_name = '품목', max_length= 30)
+    name = models.CharField(verbose_name = '견적서 명', max_length= 200, null=True)
     kwargs = PickledObjectField()
     additional_kwargs = PickledObjectField(null=True)
     prices = PickledObjectField(null=True)

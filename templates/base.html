@@ -6,98 +6,173 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-
-    <!-- CSS -->
+    <!--CSS CDN-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css"
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-    <link rel="stylesheet" type="select/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet"  href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
+
+
 
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"></script>
+
+
 
     <!-- CKEDITOR -->
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
 
-    <!-- fullcalendar CDN -->
-    <link href='/static/main.css' rel='stylesheet' />
-    <script src='/static/main.js'></script>
+    <!-- moment lib -->
+    <script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
 
-    <!-- calendar popup utils -->
-    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
-    <script src="https://unpkg.com/tippy.js@6"></script>
+    <!-- the moment-to-fullcalendar connector. must go AFTER the moment lib -->
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/moment@5.5.0/main.global.min.js'></script>
+
 
 
     <script>
+    // 선언 다 했고, 초기화 잘하고, 필터할 값 들어가는데
+    // 이게.. 다시 초기화를 해줘야 하는데 그게 안돼..
+    //var calendar;
+    //$(document).ready(function () {
     document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            height: '700px', // calendar 높이 설정
-            expandRows: true, // 화면에 맞게 높이 재설정
-            slotMinTime: '08:00', // Day 캘린더에서 시작 시간
-            slotMaxTime: '20:00', // Day 캘린더에서 종료 시간
-            // 해더에 표시할 툴바
+
+        let currentDayDate = new Date().toISOString().slice(0, 10);
+
+
+        let checkbox = document.getElementsByClassName('badgebox');
+
+        console.log(checkbox);
+
+        let calendarEl = document.getElementById('calendar');
+
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            height: '700px',
+            expandRows: true,
+            slotMinTime: '00:00',
+            slotMaxTime: '24:00',
             headerToolbar: {
               left: 'prev,next today',
-              center: 'title',
+              center: 'title addEventButton',
               right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             },
-            initialView: 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
-            navLinks: true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
-            editable: false, // 수정 가능?
-            selectable: true, // 달력 일자 드래그 설정가능
-            nowIndicator: true, // 현재 시간 마크
-            dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
-            locale: 'ko', // 한국어 설정
-            eventDidMount: function(info) {
+            initialView: 'dayGridMonth',
+            navLinks: true,
+            editable: false,
+            selectable: true,
+            nowIndicator: true,
+            dayMaxEvents: 5,
+            locale: 'ko',
+
+            eventDidMount: function(info) { // display가 되는 event만 넘어옴. 즉, 꺼주어야 한다.
+
+                let count = 0;
+                let box_count = 0;
+
+               for (var i = 0; i < checkbox.length; i++) {
+                    if (checkbox[i].checked == true) {
+                        box_count ++ ;
+                        if (!(checkbox[i].value == info.event.backgroundColor || checkbox[i].value == "all")) {
+                            count ++ ;
+                            };
+                        };
+                    };
+
+                if (count == box_count) {
+                    info.el.style.display = 'none';
+                    };
+
+                var users = info.event.extendedProps.users;
+                var description = info.event.extendedProps.description;
+                var start = moment(info.event.start).format('YYYY/MM/DD');
+                var end = moment(info.event.end).subtract(1, 'minutes').format('YYYY/MM/DD');
+
                 tippy(info.el, {
-                content:  info.event.extendedProps.description,//이벤트 디스크립션을 툴팁으로 가져옵니다.
-                });
-            },
+                    animation: 'fade',
+                    theme: 'material',
+                    trigger: 'click',
+                    allowHTML: true,
+                    interactive: true,
+                    content: '<div> [담당자] ' + users + '</div><br><div> [내용] ' + description + '</div><br><div> [기간] ' + start + ' ~ ' + end + ' </div>', //info.event.extendedProps.description
+                    }); // tippy end
+                },
+            events: function (fetchInfo, successCallback, failureCallback) {
+                successCallback([
+                    {% for event in vacations %}
+                        {
+                        groupId : "{{event.id}}",
+                        backgroundColor: '{{event.color}}',
+                        borderColor : '{{event.color}}',
+                        title: '{{event.title}}',
+                        start: '{{event.start}}',
+                        end: '{{event.end}}',
+                        allDay : {{event.allday}},
+                        description : '{{event.description}}',
+                        users : '{{event.users}}',
+                        overlap : 'false'
+                        },
+                    {% endfor %}
+                    {% for event in tasks %}
+                        {
+                        groupId : '{{event.id}}',
+                        backgroundColor: '{{event.color}}',
+                        borderColor : '{{event.color}}',
+                        title: '{{ event.title}}',
+                        start: '{{ event.start }}',
+                        end: '{{ event.end}}',
+                        allDay : {{event.allday}},
+                        description : '{{event.description}}',
+                        overlap : 'false',
+                        users : '{{event.users}}'
 
-            events: [
-                {% for event in vacations %}
-                    {
-                    groupId : "{{event.id}}",
-                    backgroundColor: '{{event.color}}',
-                    borderColor : '{{event.color}}',
-                    title: "{{event.title}}",
-                    start: '{{event.start}}',
-                    end: '{{event.end}}',
-                    allDay : {{event.allday}},
-                    description : '{{event.description}}',
-                    overlap : 'false'
-                    },
-                {% endfor %}
-                {% for event in tasks %}
-                    {
+                        },
+                    {% endfor %}
 
-
-                    groupId : "{{event.id}}",
-                    backgroundColor: '{{event.color}}',
-                    borderColor : '{{event.color}}',
-                    title: "{{ event.title}}",
-                    start: '{{ event.start }}',
-                    end: '{{ event.end}}',
-                    allDay : {{event.allday}},
-                    description : '{{event.description}}',
-                    overlap : 'false'
-
-                    },
-                {% endfor %}
-                ],
-                slotEventOverlap : false,
-                displayEventTime: false
-
+                    ]); // event end
+                }
 
             });
-
         calendar.render();
-      });
 
+
+
+        for (var i = 0; i < checkbox.length; i++) {
+
+            checkbox[i].addEventListener('change', function() {
+                calendar.refetchEvents();
+                });
+            console.log('added');
+
+        }
+
+
+
+
+
+
+    });
+
+
+        // so your code will be
     </script>
+
+
+
+
+    <style>
+        .tippy-box{
+          width:600px;
+        }
+    </style>
+
+
     <title> 게시판 </title>
 </head>
 <body>

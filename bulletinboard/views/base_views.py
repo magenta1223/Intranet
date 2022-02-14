@@ -141,7 +141,7 @@ def cat_index(request, cat_name):
         messages.warning(request, msg)
         context = {'categories': categories}
 
-        return render(request, 'landing.html', context)
+        return redirect('landing')
 
 
 

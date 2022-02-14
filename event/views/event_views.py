@@ -12,6 +12,7 @@ from common.models import Wrapper, User
 from django.shortcuts import render, get_object_or_404, resolve_url, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from datetime import timedelta
 
 # donwload
 from common.utils import is_authenticated
@@ -51,14 +52,12 @@ def vacation_request(request):
         if form.is_valid():
             vacation = form.save(commit=False)
 
-            print(vacation.description)
             vacation.author = request.user
             user = User.objects.get(id = request.user.id)
             vacation.status = '1' # for requested
             vacation.name = f'{request.user.name} 휴가'
             vacation.create_date = timezone.now()
-
-            print(vacation.start, vacation.end)
+            vacation.end = vacation.end + timedelta(days = 1) # for allday
 
             vacation.save()
 
@@ -75,5 +74,7 @@ def vacation_request(request):
         context = {'form': form, 'categories' : categories}
         return render(request, 'event/vacation_form.html', context)
 
+def test(request):
+    return render(request, 'test.html')
 
 

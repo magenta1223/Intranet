@@ -7,5 +7,3 @@ db.sqlite3
 
 # mypy
 
-package.json
-package-lock.json

@@ -15,5 +15,6 @@ urlpatterns = [
     path('profile/modify', profile_views.profile_modify, name='profile_modify'),
     path('profile/schedule/', event_views.calendar_view, name='myschedule'),
     path('profile/request', event_views.vacation_request, name='vacation_request'),
+    path('profile/test', event_views.test, name='test'),
 
 ]

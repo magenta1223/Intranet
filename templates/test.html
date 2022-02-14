@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+<script src="http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.js"></script>
+<link rel="stylesheet" href="http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.css" />
+
+
+<select id="school_selector">
+  <option value="all">All</option>
+  <option value="1">School 1</option>
+  <option value="2">School 2</option>
+</select>
+
+<div id="mycalendar"></div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+$(document).ready(function () {
+    // page is now ready, initialize the calendar...
+    $('#mycalendar').fullCalendar({
+        //Changing the header like this:
+
+        height: '700px',
+            expandRows: true,
+            slotMinTime: '00:00',
+            slotMaxTime: '24:00',
+            headerToolbar: {
+              left: 'prev,next today',
+              center: 'title addEventButton',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            initialView: 'dayGridMonth',
+            navLinks: true,
+            editable: false,
+            selectable: true,
+            nowIndicator: true,
+            dayMaxEvents: 5,
+            locale: 'ko',
+
+
+        //Lets us edit in the calendar
+        editable: true,
+
+        //Add some test events.
+       events: [
+       {
+           title  : 'event1',
+           start  : '2022-02-15'
+       },
+       {
+           title  : 'event2',
+           start  : '2022-02-15',
+           end    : '2022-02-16'
+       },
+       {
+           title  : 'event3',
+           start  : '2022-02-15T12:30:00',
+           allDay : false // will make the time show
+       }
+       ]
+    })
+});
+</script>
+{% endblock %}
