@@ -17,6 +17,7 @@ def landing(request):
         Q(status__iexact = '2')
     )
 
+
     tasks = Task.objects.all()
 
     vacations_reforatted = reformat(vacations, vacation = True)
@@ -25,9 +26,9 @@ def landing(request):
     color_dict = { config.name : config.color for i, config in enumerate(TaskConfig.objects.all())}
 
     color_dict['지나간 휴가'] = '#DCDCDC'  # 회색. 지나감
-    color_dict['승인 대기중인 휴가'] = '#BDE3DD'  # 연한 초록색. 승인 대기중
+    #color_dict['승인 대기중인 휴가'] = '#BDE3DD'  # 연한 초록색. 승인 대기중
     color_dict['예정된 휴가'] = '#03BD9E'  # 승인
-    color_dict['반려된 휴가'] = '#FF4040'  # 반려
+    #color_dict['반려된 휴가'] = '#FF4040'  # 반려
 
     color_dict_json = json.dumps(color_dict)
 
