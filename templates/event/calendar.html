@@ -1,0 +1,23 @@
+<div class="card my-3">
+    <div class="card-body">
+        <!-- post 내용 -->
+        <div class="col-lg-3 col-sm-12" style = "float:left;">
+
+                 업무
+                {% for name, code in task_colors.items %}
+                <label id = "label_{{code}}"   value="{{ code }}" for= "badge_{{code}}"  class="btn btn-secondary w-100" style="font-size:15px;text-align:left;"> {{name}} <input type="checkbox" id="badge_{{code}}" class="badgebox" value="{{ code }}"checked><span class="badge" style="float:right;">&check;</span></label>
+                {% endfor %}
+
+
+
+                휴가
+                {% for name, code in vac_colors.items %}
+                <label id = "label_{{code}}"   value="{{ code }}" for= "badge_{{code}}"  class="btn btn-secondary w-100" style="font-size:15px;text-align:left;"> {{name}} <input type="checkbox" id="badge_{{code}}" class="badgebox" value="{{ code }}"checked><span class="badge" style="float:right;">&check;</span></label>
+                {% endfor %}
+
+
+        </div>
+        <div id="calendar" class = "col-lg-9 col-sm-12"></div>
+    </div>
+</div>
+

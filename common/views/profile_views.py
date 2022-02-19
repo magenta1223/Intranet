@@ -26,22 +26,19 @@ def profile(request):
     user = request.user
     categories = Category.objects.all()  # 전체 카테고리
 
-    vacations = []
 
-    '#DCDCDC' # 회색. 지나감
-    '#BDE3DD' # 연한 초록색. 승인 대기중
-    '#03BD9E' # 승인
-    '#FF4040' # 반려
+    # --------------------------------- #
+    task_colors = { config.name : config.color for i, config in enumerate(TaskConfig.objects.all())}
+    vac_colors = {}
+    vac_colors['지나감'] = '#DCDCDC'  # 회색. 지나감
+    vac_colors['승인 대기'] = '#BDE3DD'  # 연한 초록색. 승인 대기중
+    vac_colors['예정'] = '#03BD9E'  # 승인
+    vac_colors['반려'] = '#FF4040'  # 반려
 
-    color_dict = { config.name : config.color for i, config in enumerate(TaskConfig.objects.all())}
+    vac_colors_json = json.dumps(vac_colors)
+    task_colors_json = json.dumps(task_colors)
 
-    color_dict['지나간 휴가'] = '#DCDCDC'  # 회색. 지나감
-    color_dict['승인 대기중인 휴가'] = '#BDE3DD'  # 연한 초록색. 승인 대기중
-    color_dict['예정된 휴가'] = '#03BD9E'  # 승인
-    color_dict['반려된 휴가'] = '#FF4040'  # 반려
-
-    color_dict_json = json.dumps(color_dict)
-
+    # --------------------------------- #
 
     # 휴가는 작성자가 본인임
     vacations = Vacation.objects.filter(
@@ -54,11 +51,22 @@ def profile(request):
     )
 
 
-    vacations_reforatted = reformat(vacations, vacation = True)
-    tasks_reforatted = reformat(tasks)
+    # reformat
+    vacations = json.dumps(reformat(vacations, vacation = True))
+    tasks = json.dumps(reformat(tasks, vacation = False))
 
 
-    context = {'user' : user , 'categories' : categories, 'vacations' : vacations_reforatted, 'tasks': tasks_reforatted, 'color_dict' : color_dict, 'color_dict_json' : color_dict_json}
+
+    context = {'user' : user ,
+               'categories' : categories,
+               'vacations' : vacations,
+               'tasks': tasks,
+               'vac_colors' : vac_colors,
+               'vac_colors_json' : vac_colors_json,
+               'task_colors': task_colors,
+               'task_colors_json' : task_colors_json
+
+               }
 
 
     return render(request, 'common/profile.html', context)

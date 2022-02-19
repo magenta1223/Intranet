@@ -16,25 +16,33 @@ def landing(request):
     vacations = Vacation.objects.filter(
         Q(status__iexact = '2')
     )
-
-
     tasks = Task.objects.all()
 
-    vacations_reforatted = reformat(vacations, vacation = True)
-    tasks_reforatted = reformat(tasks)
-
-    color_dict = { config.name : config.color for i, config in enumerate(TaskConfig.objects.all())}
-
-    color_dict['지나간 휴가'] = '#DCDCDC'  # 회색. 지나감
-    #color_dict['승인 대기중인 휴가'] = '#BDE3DD'  # 연한 초록색. 승인 대기중
-    color_dict['예정된 휴가'] = '#03BD9E'  # 승인
-    #color_dict['반려된 휴가'] = '#FF4040'  # 반려
-
-    color_dict_json = json.dumps(color_dict)
+    # reformat
+    vacations = json.dumps(reformat(vacations, vacation = True))
+    tasks = json.dumps(reformat(tasks, vacation = False))
 
 
 
-    context = {'categories' : categories, 'categories' : categories, 'vacations' : vacations_reforatted, 'tasks': tasks_reforatted,  'color_dict':color_dict, 'color_dict_json' : color_dict_json}
+    task_colors = { config.name : config.color for i, config in enumerate(TaskConfig.objects.all())}
+    vac_colors = {}
+    vac_colors['지나감'] = '#DCDCDC'  # 회색. 지나감
+    vac_colors['예정'] = '#03BD9E'  # 승인
+
+    vac_colors_json = json.dumps(vac_colors)
+    task_colors_json = json.dumps(task_colors)
+
+
+    context = {'categories' : categories,
+               'vacations' : vacations,
+               'tasks': tasks,
+               'vac_colors' : vac_colors,
+               'vac_colors_json' : vac_colors_json,
+               'task_colors': task_colors,
+               'task_colors_json' : task_colors_json
+
+               }
+
 
 
     return render(request, 'landing.html', context)

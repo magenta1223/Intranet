@@ -2,27 +2,20 @@
 {% block content %}
 {% if user.is_authenticated%}
 
-    {% if messages %}
-    {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-auto-dismissible alert-dismissible notification-container text-center" role="alert" style ="width:80%;margin: 0 auto;">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% endif %}
-
-<div class="container my-3">
-    <h5 class="border-bottom pb-2">랜딩페이지</h5>
-    <div class="container">
-        {% for name, code in color_dict.items %}
-        <label id = "label_{{code}}"   value="{{ code }}" for= "badge_{{code}}"  class="btn btn-primary"> {{name}} <input type="checkbox" id="badge_{{code}}" class="badgebox" value="{{ code }}" checked><span class="badge">&check;</span></label>
-        {% endfor %}
-
+{% if messages %}
+{% for message in messages %}
+    <div class="alert {{ message.tags }} alert-auto-dismissible alert-dismissible notification-container text-center" role="alert" style ="width:80%;margin: 0 auto;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
     </div>
+{% endfor %}
+{% endif %}
 
-    <div id='calendar'></div>
+<div class="container-fluid my-3">
+    <h5 class="border-bottom pb-2">랜딩페이지</h5>
+    {% include "event/calendar.html" %}
     <!-- modal 추가 -->
     <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -53,20 +46,6 @@
             </div>
         </div>
     </div>
-    <div class="panel-body">
-
-        <div class="col-lg-6">
-
-            <select id="type_filter">
-                <option value="all">all</option>
-                <option value="#DCDCDC">#DCDCDC</option>
-                <option value="#BDE3DD">#BDE3DD</option>
-            </select>
-        </div>
-    </div>
-
-
-
 </div>
 
 {% else %}
@@ -100,27 +79,11 @@
 {% endblock %}
 
 {% block script %}
-
 <script>
-    window.setTimeout(function() {
-    $(".alert-auto-dismissible").fadeTo(500, 0).slideUp(500, function(){
-        $(this).remove();
-    });
-}, 2000);
-
-    var color_dict = JSON.parse("{{ color_dict_json|escapejs }}");
-
-    console.log(color_dict)
-
-    for(var key in color_dict){
-        var el = document.getElementById("label_" + color_dict[key]);
-        el.style["background-color"] =  color_dict[key];
-        el.style["border-color"] =  color_dict[key];
-
-        };
-
-
-
+    // js파일에서 처리하기위해 전역변수로 선언
+    const vac_colors_json = JSON.parse("{{ vac_colors_json|escapejs }}");
+    const task_colors_json = JSON.parse("{{ task_colors_json|escapejs }}");
+    const vacs = JSON.parse("{{ vacations|escapejs }}");
+    const tasks = JSON.parse("{{ tasks|escapejs }}");
 </script>
-
 {% endblock%}

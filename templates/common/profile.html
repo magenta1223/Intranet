@@ -2,7 +2,7 @@
 {% block content %}
 
 
-<div class="container my-3">
+<div class="container-fluid my-3">
     <h2 class="border-bottom py-2"> 사용자 프로필 </h2>
     <h4 class="border-bottom py-2"> 프로필 사진 </h4>
     <!--<div class="card my-3">
@@ -34,22 +34,9 @@
         </div>
     </div>
     <h4 class="border-bottom py-2"> 나의 일정표 </h4>
-    <div class="card my-3"> <!-- card style from bootstrap -->
-        <div class="card-body"> <!-- div에 스타일 적용 -->
-            <!-- post 내용 -->
-            <div class="container">
-                {% for name, code in color_dict.items %}
-                <label id = "label_{{code}}"   value="{{ code }}" for= "badge_{{code}}"  class="btn btn-primary"> {{name}} <input type="checkbox" id="badge_{{code}}" class="badgebox" value="{{ code }}" checked><span class="badge">&check;</span></label>
-                {% endfor %}
-
-            </div>
+    {% include "event/calendar.html" %}
 
 
-            <div id="calendar"></div>
-
-        </div>
-
-    </div>
     {% if user.is_superuser %}
     <a class="btn btn-primary" disabled>관리자는 프로필을 수정할 수 없습니다.</a>
     {% else %}
@@ -63,20 +50,17 @@
 
 {% endblock %}
 
+
 {% block script %}
-
 <script>
+    // js파일에서 처리하기위해 전역변수로 선언
 
-    var color_dict = JSON.parse("{{ color_dict_json|escapejs }}");
+    const vac_colors_json = JSON.parse("{{ vac_colors_json|escapejs }}");
+    const task_colors_json = JSON.parse("{{ task_colors_json|escapejs }}");
+    const vacs = JSON.parse("{{ vacations|escapejs }}");
+    const tasks = JSON.parse("{{ tasks|escapejs }}");
 
-    console.log(color_dict)
 
-    for(var key in color_dict){
-        var el = document.getElementById("label_" + color_dict[key]);
-        el.style["background-color"] =  color_dict[key];
-        el.style["border-color"] =  color_dict[key];
 
-        }
 </script>
-
-{% endblock %}
+{% endblock%}

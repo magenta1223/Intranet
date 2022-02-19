@@ -21,17 +21,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from event.views import *
-#urlpatterns = [
-#    path('admin/', admin.site.urls), # 관리자 페이지
-#    path('', landing, name='landing'), # 랜딩페이지
-#    path('bulletinboard/', base_views.index, name = 'index' ),
-#    path('bulletinboard/', include('bulletinboard.urls')),
-#    path('common/', include('common.urls')),
-#    path('task/', include('task.urls')),
-#    path('ckeditor/', include('ckeditor_uploader.urls')),
-#] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
 
 urlpatterns = [
     path('admin/', admin.site.urls), # 관리자 페이지
