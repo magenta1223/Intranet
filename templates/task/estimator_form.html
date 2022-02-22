@@ -73,3 +73,29 @@
 
 {% endblock %}
 
+{% block script %}
+
+<script>
+var x = 1;
+
+$('#add-button').click(function() {
+    var wrapper = $('#form123')
+    var structure = $('<div class="form-group"><label for = "additional_' + x + '">추가항목 ' + x + '</label><br/><div style = "width: 20%;float:left;">항목 이름 &nbsp;: &nbsp;&nbsp;</div><input class="form-control" type="text" style = "width:auto;" name="additional_key' + x + '"><br/><div style = "width: 15%;float:left;"> 가격 &nbsp;: &nbsp;&nbsp;</div><input class="form-control" type="text" style = "width: auto;" name="additional_val' + x +  '"><br><a href="#" class="delete" id = "delete'+x+'">삭제</a></div>');
+    var submit_btn = $('#submit')
+
+    $(submit_btn).before(structure);
+
+    x++;
+    //off 안하면 페이지 안에서의 누적클릭횟수만큼 반복해서 발생함
+    $(wrapper).off().on("click", ".delete", function(e) {
+        e.preventDefault();
+        $(this).parent('div').remove();
+        x--;
+    });
+});
+
+</script>
+
+
+
+{% endblock %}

@@ -59,6 +59,7 @@ class Estimator(models.Model):
 
 class EstimatorType(models.Model):
     type = models.CharField(max_length= 30)
+    name = models.CharField(max_length= 30)
     kwargs = PickledObjectField() # 각 품목별 필요한 값을 담아놓는 필드
 
     def __str__(self):

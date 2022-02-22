@@ -48,5 +48,9 @@
     "max": 4,
     "value": 0,
     "text": "문짝"
-  }
+  },
+
+  "name" : "closet"
+
+
 }

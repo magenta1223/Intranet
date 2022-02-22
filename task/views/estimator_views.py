@@ -117,11 +117,6 @@ def estimator_download(request, estimator_id):
     return download(request, file_path, f'{estimator.name}.xlsx')
 
 
-
-
-
-
-
 @login_required(login_url='common:login')
 def multi_estimator_create(request):
     if request.method == 'POST':
@@ -159,17 +154,12 @@ def multi_estimator_create(request):
 
 
 def estimator_add(request):
-
-    print(request.POST['type'])
-    #data = json.loads(request.body)
-    #print(data)
-
+    """
+    Add new estimator in multi-estimator container
+    """
     e_type = EstimatorType.objects.filter( type =  request.POST['type'])[0]
 
     kwargs = e_type.kwargs
-
-
-    form = EstimatorForm()
 
     categories = to_json(Category.objects.all())
     types = to_json(EstimatorType.objects.all())
@@ -177,3 +167,50 @@ def estimator_add(request):
 
 
     return JsonResponse(  context  )
+
+
+
+
+@login_required(login_url='common:login')
+def estimator_create2(request):
+
+    #print(json.loads(request.POST['json']))
+
+
+    estimator_kwargs= request.POST.dict()#json.loads(request.POST)
+
+    type = estimator_kwargs['type']   
+    del  estimator_kwargs['type'],estimator_kwargs['csrfmiddlewaretoken']
+    
+
+    estimator = Estimator(kwargs= estimator_kwargs)
+
+    estimator.author = request.user
+    estimator.create_date = timezone.now()
+    estimator.type = type
+    estimator.name = 'test' #f"{request.POST['customer']}-{request.POST['type']}-{timezone.now().strftime('%Y-%m-%d %H')}"
+    # subclass도 가져오고, 해당 subclass의 field를 가져와서
+    #additional_kwargs = { k : v for k, v in request.POST.items() if 'additional' in k }
+    #estimator.additional_kwargs = { additional_kwargs[f'additional_key{i}'] : additional_kwargs[f'additional_val{i}'] for i in range(1, (len(additional_kwargs) // 2) + 1)}
+
+    prices = calc_closet(estimator.kwargs)
+    estimator.prices = prices    
+    estimator.save()
+
+    wrapper = Wrapper(estimator = estimator, create_date = estimator.create_date, author = estimator.author, app_name = 'task', content_name = 'estimator')
+    wrapper.save()
+
+    
+
+
+    #estimator_kwargs = json.loads(request.POST['json'])
+    
+
+    context = {'id' : wrapper.id}
+
+    return JsonResponse(  context  )
+
+
+
+
+    #return redirect('task:index')

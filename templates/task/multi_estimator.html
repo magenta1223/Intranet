@@ -2,8 +2,22 @@
 {% block content %}
 
 
-<div class="container">
-    <h5 class="my-3 border-bottom pb-2"> 종합 견적서 작성하기 </h5>
+<div class="container" id = "container">
+    <h5 class="my-3 border-bottom pb-2" id = "wrapper"> 종합 견적서 작성하기 </h5>
+    <div class="card my-3">
+        <div class="d-flex justify-content-end" style = "margin-right:20px;">
+            <div class="card-body">
+                <div class="card-text" style="white-space: pre-line;">내용 텟트</div>
+            </div>        
+            <div class="my-3">
+                <a href="#" class="btn btn-sm btn-outline-secondary">수정</a>
+                <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="#">삭제</a>
+            </div>
+        </div>
+    </div>
+
+
+
     <form method="post" class="post-form my-3" id = "form123">
         {{form.media}}
         {% csrf_token %}
@@ -22,13 +36,15 @@
         <br>
         <span>  2) 일단은, closet을 ''보내놓고'', 선택에 따라 ajax로 변경. - Done  </span>
         <br>
-        <span>  3) 만약 type이 바뀌면 기존 것은 삭제하고 새 것 추가 </span>
+        <span>  3) 만약 type이 바뀌면 기존 것은 삭제하고 새 것 추가 - Done </span>
         <br>
-        <span>  4) 작성 버튼 클릭 시, 화면에 추가 </span>
+        <span>  4) 작성 버튼 클릭 시, 화면에 추가 - Done </span>
         <br>
-        <span>  5) 종합 버튼 클릭 시, multi_estimator_create로 보냄 </span>
+        <span>  5) 수정 - 추가 필요, 삭제 - Done </span>
         <br>
-        <span>  6) 각 estimator별로 model 작성, container도 작성 및 저장 </span>
+        <span>  6) 종합 버튼 클릭 시, multi_estimator_create로 보냄 </span>
+        <br>
+        <span>  7) 각 estimator별로 model 작성, container도 작성 및 저장 </span>
         <br>
 
 
@@ -52,7 +68,7 @@
                 <h4 class="modal-title" id="myModalLabel">Modal 제목</h4>
             </div>
             <div class="modal-body">Modal 내용
-                <form method="post" class="post-form my-3" id = "form1">
+                <form method="post" class="post-form my-3" id = "tttttt">
                     {{form.media}}
                     {% csrf_token %}
                     {% if form.errors %}
@@ -71,7 +87,7 @@
                         <select class="form-control" name="type" id="type" aria-label=".form-select-lg example" required>
                             <option value= "" disabled selected hidden>type select</option>
                             {% for type in types%}
-                            <option value= {{type}}>{{type}}</option>
+                            <option value= {{type.type}}>{{type.name}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -81,7 +97,7 @@
 
 
             <div class="modal-footer">
-                <button id = "submit-modal"  class="btn btn-primary">제출하기</button>
+                <button id = "submit-modal" type='button' class="btn btn-primary">제출하기</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
             </div>
         </div>
@@ -99,6 +115,13 @@
 {% block script %}
 
 <script>
+// type에 따른 modal form 갱신
+// global variable
+var container = $('#form123');
+var estimator_count = 1;
+
+var all_forms = Array();
+
 
 $(document).ready(function(){
     var type = document.getElementById('type');
@@ -118,37 +141,24 @@ $(document).ready(function(){
 
             success: function(data){
 
-                console.log(data['types']);
-
+                // type의 부모 노드의 자식노드 (이전에 선택한 견적서 타입에 따라 추가한 form-group들)을 지움
 
                 var type = $('#type_div');
+                var children = type.parent().children('.form-group').not('#type_div').remove();
 
 
-                var children = type.parent().children();
-
-                for (var i in children){
-                    var child = children[i];
-                    if (child.className == 'form-group' & child.id != 'type_div'){
-                        console.log(child);
-                        child.remove();
-                        };
-                    };
-
-
-
+                // 받아온 데이터의 kwargs를 추가
 
                 for (var i in data['kwargs']){
                     let kwarg = data['kwargs'][i];
                     var structure = '';
 
-
                     structure = structure + '<div class="form-group">' ;
                     structure = structure + '<label for="' + kwarg.text + '">' + kwarg.text + '</label>';
-                    structure = structure + '<input type="' + kwarg.type + '" class="form-control" name="' + kwarg.text + '" id="' + kwarg.text + '" rows="10" value="' + kwarg.value + '" min="' + kwarg.min + '" max="' + kwarg.max + '">';
+                    structure = structure + '<input id = "' + i  + '" type="' + kwarg.type + '" class="form-control" name="' + kwarg.text + '" id="' + kwarg.text + '" rows="10" value="' + kwarg.value + '" min="' + kwarg.min + '" max="' + kwarg.max + '">';
                     structure = structure + '</div>'
 
                     structure = $(structure);
-
 
                     $(type).after(structure);
 
@@ -157,16 +167,140 @@ $(document).ready(function(){
             error : function(){
                 console.log('error');
                 }
-
             });
         });
     });
 
 
-$(document).ready(function(){
-//제츨하기 !
 
-})
+
+
+$(document).ready(function(){
+    var modal_btn = document.getElementById('submit-modal');  //$('#submit-modal');
+    var type = document.getElementById('type');
+
+
+    modal_btn.addEventListener('click', function() {
+
+        // form 값 가져왔고, 저장해야 함 
+        var structure = '';
+
+        structure = structure + '<div class="card my-3">';
+        structure = structure + '<div class="d-flex justify-content-end" style = "margin-right:20px;">'
+        structure = structure + '<div class="card-body">';
+        structure = structure + '<div class="card-text" style="white-space: pre-line;">' + estimator_count +  '</div>';
+        structure = structure + '</div>'
+        structure = structure + '<div class="my-3">'
+        structure = structure + '<a id = "delete' + estimator_count + '" href="#" class="btn btn-sm btn-outline-secondary modify" style = "margin-right:5px;" type="button" data-toggle="modal" data-target="#modal">수정</a>'
+        structure = structure + '<a href="#" class="delete btn btn-sm btn-outline-secondary delete" data-uri="#">삭제</a>'
+        structure = structure + '</div></div></div>'
+
+        structure = $(structure);
+
+        $(container).before(structure);
+        estimator_count ++;
+
+
+
+        var delete_btn = structure.find('a.delete')[0];//document.getElementById('delete' + estimator_count); //structure.find('a.delete');
+        var modify_btn = structure.find('a.modify')[0];
+
+        delete_btn.addEventListener('click', function(){
+            $(this).parents().eq(2).remove(); // 위로 2번째 element 삭제
+            estimator_count--;
+            
+            });
+
+        modify_btn.addEventListener('click', function(){
+            $.ajax({
+                url : "{% url 'task:estimator_add' %}",
+                type : 'POST',
+                datatype: 'json',
+                data : param,
+
+                success: function(data){
+                    // 1) 정보를 가져오는 것임. GET
+                    // 2) 그에 맞춰서 form을 세팅. 기존에 modal form의 요소 삭제 및 불러온 정보 추가, 값 세팅
+                
+
+                    
+                        
+                    },
+                error : function(){
+                    console.log('error');
+                    }
+                });
+
+            });
+
+        var children = $(modal_btn).parents(".modal-content").find('input').not('#type_div').not('.csrfmiddlewaretoken');
+        var form_dict = {};
+
+        $(modal_btn).parents(".modal-content").find("input[name!='csrfmiddlewaretoken']").not('#type_div').each(function(){
+            form_dict[ $(this).prop('id')] = $(this).val()
+            });
+        
+          
+        form_dict['csrfmiddlewaretoken'] = '{{ csrf_token }}'
+        form_dict['type'] = type.value;
+
+        $.ajax({
+            url : "{% url 'task:estimator_create2' %}",
+            type : 'POST',
+            datatype: "json",
+            data : form_dict,
+
+            success: function(data){
+
+                // 몰라몰라~
+                // 1) 정보를 가져오는 것임. GET
+                // 2) 그에 맞춰서 form을 세팅. 기존에 modal form의 요소 삭제 및 불러온 정보 추가, 값 세팅
+                var modify_btn = structure.find('a.modify')[0];
+
+                
+                modify_btn.value =  data['id'];
+                
+                console.log('success');
+                    
+                },
+            error : function(){
+                console.log('error');
+                }
+            });
+
+        
+
+        // 이게 event를 e로 받았을 때 마지막 함수가 실행되네.. 
+        // 왜냐면 off를 하면서 이전 이벤트를 날려버림 ; 
+        // 걍 이벤트 리스너 추가해야겟다.
+        //$(structure).off().on("click", ".modify", function(e) {
+            //  type="button" data-toggle="modal" data-target="#modal" 일단은 수정 버튼에 추가해놓음
+            // 근데 이러면 새로운 창이 열리는거지 기존 정보가 보관된게 아님
+            // 기존 작성된 정보를 불러와야 한다. 
+
+            // 일단 값을 저장도 안해놓음
+            // form의 정보를 js로 처리해서, 보이지 않게 갖고 있다가
+            // 수정버튼 혹은 전체 제출버튼이 눌리면 가져오도록 해야 함 
+
+            // 그냥 여기도 ajax로 보내서 저장 에이 몰라~
+            //console.log('되냐?');
+
+            //e.preventDefault();
+            //$(this).parents().eq(2).remove(); // 위로 2번째 element 삭제
+            //estimator_count--;
+            //});
+
+
+        // 창 닫기
+        $('#modal').modal('hide');
+
+
+
+        });
+    });
+
+
+
 
 
 </script>
