@@ -118,9 +118,8 @@
 // type에 따른 modal form 갱신
 // global variable
 var container = $('#form123');
-var estimator_count = 1;
+var estimator_count = 0;
 
-var all_forms = Array();
 
 
 $(document).ready(function(){
@@ -150,17 +149,19 @@ $(document).ready(function(){
                 // 받아온 데이터의 kwargs를 추가
 
                 for (var i in data['kwargs']){
-                    let kwarg = data['kwargs'][i];
-                    var structure = '';
+                    if (i != 'name'){
+                        let kwarg = data['kwargs'][i];
+                        var structure = '';
 
-                    structure = structure + '<div class="form-group">' ;
-                    structure = structure + '<label for="' + kwarg.text + '">' + kwarg.text + '</label>';
-                    structure = structure + '<input id = "' + i  + '" type="' + kwarg.type + '" class="form-control" name="' + kwarg.text + '" id="' + kwarg.text + '" rows="10" value="' + kwarg.value + '" min="' + kwarg.min + '" max="' + kwarg.max + '">';
-                    structure = structure + '</div>'
+                        structure = structure + '<div class="form-group">' ;
+                        structure = structure + '<label for="' + kwarg.text + '">' + kwarg.text + '</label>';
+                        structure = structure + '<input id = "' + i  + '" type="' + kwarg.type + '" class="form-control" name="' + kwarg.text + '"rows="10" value="' + kwarg.value + '" min="' + kwarg.min + '" max="' + kwarg.max + '">';
+                        structure = structure + '</div>'
 
-                    structure = $(structure);
+                        structure = $(structure);
 
-                    $(type).after(structure);
+                        $(type).after(structure);
+                        };
 
                     }
                 },
@@ -182,7 +183,18 @@ $(document).ready(function(){
 
     modal_btn.addEventListener('click', function() {
 
-        // form 값 가져왔고, 저장해야 함 
+        // form 식별해서 덮어쓰기가 안됨
+        // 현재 작성중인 임시 견적서의 id를 알아야 함
+        // 전역 변수로 지정
+        // 신규작성의 경우, estimator_count에 해당하는 form이 없음
+        // 수정의 경우, 반드시 있다. 
+        estimator_count ++;
+
+        console.log($('#'+estimator_count));
+        // 만약 해당하는 요소가 있으면, 거기에 덮어 써라
+        // 없으면 기존대로 신규작성
+
+
         var structure = '';
 
         structure = structure + '<div class="card my-3">';
@@ -193,13 +205,29 @@ $(document).ready(function(){
         structure = structure + '<div class="my-3">'
         structure = structure + '<a id = "delete' + estimator_count + '" href="#" class="btn btn-sm btn-outline-secondary modify" style = "margin-right:5px;" type="button" data-toggle="modal" data-target="#modal">수정</a>'
         structure = structure + '<a href="#" class="delete btn btn-sm btn-outline-secondary delete" data-uri="#">삭제</a>'
+        structure = structure + '<form id="' + estimator_count + '" method="get">'
+
+        $(modal_btn).parents(".modal-content").find("input[name!='csrfmiddlewaretoken']").not('#type_div').each(function(){
+            structure = structure +  '<input hidden id="' + $(this).prop('id') + '" class = "' + $(this).prop('class') +'" value="' + $(this).val() + '" min = "' + $(this).prop('min') + '" max = "'+ $(this).prop('max') + '" name ="'+ $(this).prop('name') + '" type = "' + $(this).prop('type') + '">'
+            });
+
+        structure = structure + '</form>'
         structure = structure + '</div></div></div>'
+        
+
+        // 1) 모달 띄워서 hidden form 생성
+        // 2) 수정하기 위해 정보를 갖고오기
+        // 3) 근데 제출 이외의 방법으로 나가는 경우가 생김
+        // 4) 이 경우에는 다시 hidden으로 돌리면 그만임
+        // 즉, modal이 닫히는 이벤트를 작성해야 함
+            
+        
+
 
         structure = $(structure);
 
         $(container).before(structure);
-        estimator_count ++;
-
+        
 
 
         var delete_btn = structure.find('a.delete')[0];//document.getElementById('delete' + estimator_count); //structure.find('a.delete');
@@ -207,31 +235,40 @@ $(document).ready(function(){
 
         delete_btn.addEventListener('click', function(){
             $(this).parents().eq(2).remove(); // 위로 2번째 element 삭제
-            estimator_count--;
-            
+            //estimator_count--;
             });
 
         modify_btn.addEventListener('click', function(){
-            $.ajax({
-                url : "{% url 'task:estimator_add' %}",
-                type : 'POST',
-                datatype: 'json',
-                data : param,
+            // load
+            var values = $(modify_btn).parent('div').find('input');
+            // modal form init
+            var type_div = $('#type_div');
+            type_div.parent().children('.form-group').not('#type_div').remove();
+            // hidden form remove (id duplicate issue)
+            //$(modify_btn).parent().children('form').remove();
 
-                success: function(data){
-                    // 1) 정보를 가져오는 것임. GET
-                    // 2) 그에 맞춰서 form을 세팅. 기존에 modal form의 요소 삭제 및 불러온 정보 추가, 값 세팅
+            
+            // add form-group
+            for (var i = 0; i < values.length; i ++ ){
+
+                var structure = '';
+
+                var value = values[i]
+                var name = $(values[i]).prop('name')
+                structure = structure + '<div class="form-group">' ;
+                structure = structure + '<label for="' + name + '">' + name + '</label>';
+                structure = structure + value.outerHTML.replace('hidden', '');
+                structure = structure + '</div>';
                 
+                structure = $(structure)
+                
+                type_div.after(structure);
 
-                    
-                        
-                    },
-                error : function(){
-                    console.log('error');
-                    }
-                });
+                }
 
             });
+
+        // 히든으로 남기는게 낫지 않을까? 
 
         var children = $(modal_btn).parents(".modal-content").find('input').not('#type_div').not('.csrfmiddlewaretoken');
         var form_dict = {};
@@ -268,27 +305,10 @@ $(document).ready(function(){
                 }
             });
 
-        
+        // 안보이는 input으로 추가해놓기
 
-        // 이게 event를 e로 받았을 때 마지막 함수가 실행되네.. 
-        // 왜냐면 off를 하면서 이전 이벤트를 날려버림 ; 
-        // 걍 이벤트 리스너 추가해야겟다.
-        //$(structure).off().on("click", ".modify", function(e) {
-            //  type="button" data-toggle="modal" data-target="#modal" 일단은 수정 버튼에 추가해놓음
-            // 근데 이러면 새로운 창이 열리는거지 기존 정보가 보관된게 아님
-            // 기존 작성된 정보를 불러와야 한다. 
 
-            // 일단 값을 저장도 안해놓음
-            // form의 정보를 js로 처리해서, 보이지 않게 갖고 있다가
-            // 수정버튼 혹은 전체 제출버튼이 눌리면 가져오도록 해야 함 
 
-            // 그냥 여기도 ajax로 보내서 저장 에이 몰라~
-            //console.log('되냐?');
-
-            //e.preventDefault();
-            //$(this).parents().eq(2).remove(); // 위로 2번째 element 삭제
-            //estimator_count--;
-            //});
 
 
         // 창 닫기
@@ -300,7 +320,17 @@ $(document).ready(function(){
     });
 
 
+$(document).ready(function(){       
+    $('#modal').on('hide.bs.modal', function () {
+        var inputs = $(document).find('input').not('#modal');
+        for (var i = 0; i < inputs.length; i ++ ){
+            inputs[i].setAttribute("hidden", true);
 
+            };
+
+        });
+ 
+    });
 
 
 </script>

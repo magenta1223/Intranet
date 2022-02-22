@@ -149,6 +149,9 @@ def multi_estimator_create(request):
 
     categories = Category.objects.all()
     types = EstimatorType.objects.all()
+
+    print(types[0].kwargs)
+
     context = { 'categories' : categories, 'types' : types}
     return render(request, 'task/multi_estimator.html', context)
 
