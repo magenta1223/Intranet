@@ -3,7 +3,7 @@ from openpyxl.styles import Border, Side
 from string import ascii_uppercase
 from config.settings import BASE_DIR
 import os
-
+import json
 
 def closet_base(width, depth, height, num_shelves, num_vertical_bar=None):
     """
@@ -146,3 +146,10 @@ def render_esitmator(estimator):
 
     template.save(file_path)
 
+
+def config_parser(f_name):
+
+    path = f'task/configs/{f_name}.json'
+    with open(path, 'r+', encoding='utf-8') as f:
+        config = json.load(f)
+    return config

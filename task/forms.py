@@ -1,5 +1,5 @@
 from django import forms
-from .models import Estimator,EstimatorType
+from .models import *
 
 class EstimatorTypeForm(forms.ModelForm):
     class Meta:
@@ -11,3 +11,11 @@ class EstimatorForm(forms.ModelForm):
     class Meta:
         model = Estimator
         fields = ['type']
+
+
+
+class ContainerForm(forms.ModelForm):
+
+    class Meta:
+        model = EstimatorContainer
+        fields = ['name']

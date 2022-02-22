@@ -40,4 +40,7 @@ def download(request, file_path, file_name):
     return response
 
 
+def to_json(queryset):
+    return [ str(query)  for query in queryset]
+
 

@@ -1,0 +1,41 @@
+### width
+type: 'number'
+min : 1
+max : 2400
+value : 800
+text : '너비'
+
+### depth
+type: 'number'
+min : 1
+max : 800
+value : 400
+text : '깊이'
+
+### height
+type: 'number'
+min : 1
+max : 2400
+value : 1900
+text : '높이'
+
+### num_shelves
+type: 'number'
+min : 1
+max : 10
+value : 5
+text : '선반 개수'
+
+### num_vertical_bar
+type: 'number'
+min : 0
+max : 0
+value : 4
+text : '세로 벽'
+
+### num_doors
+type: 'number'
+min : 0
+max : 4
+value : 0
+text : '문짝'

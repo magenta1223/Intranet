@@ -1,20 +1,22 @@
 # models
 from bulletinboard.models import Category
-from ..models import Estimator, EstimatorType
+from ..models import *
 from common.models import Wrapper
 
 # forms
-from ..forms import EstimatorForm
+from ..forms import EstimatorForm, ContainerForm
 
 # utils
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from django.http import JsonResponse, HttpResponse
+from common.utils import to_json
 
 # estimator func
 from ..utils import *
-
+import json
 # donwload
 from common.utils import *
 from config.settings import BASE_DIR
@@ -113,3 +115,65 @@ def estimator_download(request, estimator_id):
     file_path = os.path.join(BASE_DIR, f'data/{estimator.name}.xlsx')
 
     return download(request, file_path, f'{estimator.name}.xlsx')
+
+
+
+
+
+
+
+@login_required(login_url='common:login')
+def multi_estimator_create(request):
+    if request.method == 'POST':
+        form = EstimatorForm(request.POST)
+        if form.is_valid():
+            # form.cleaned_data['subject']
+
+            estimator = form.save(commit=False)
+            estimator.author = request.user
+            estimator.create_date = timezone.now()
+            estimator.type = form.cleaned_data['type']
+            estimator.name = f"{request.POST['customer']}-{request.POST['type']}-{timezone.now().strftime('%Y-%m-%d %H')}"
+            # subclass도 가져오고, 해당 subclass의 field를 가져와서
+            estimator.kwargs = { k : v for k, v in request.POST.items() if k != 'csrfmiddlewaretoken' and 'additional' not in k}
+            additional_kwargs = { k : v for k, v in request.POST.items() if 'additional' in k }
+            estimator.additional_kwargs = { additional_kwargs[f'additional_key{i}'] : additional_kwargs[f'additional_val{i}'] for i in range(1, (len(additional_kwargs) // 2) + 1)}
+
+            prices = calc_closet(estimator.kwargs)
+            estimator.prices = prices
+            estimator.save()
+
+            wrapper = Wrapper(estimator = estimator, create_date = estimator.create_date, author = estimator.author, app_name = 'task', content_name = 'estimator')
+            wrapper.save()
+            #render_esitmator(estimator)
+
+            return redirect('task:index')
+    else:
+        # 처음 접근 시, GET을 사용 (링크를 통한 페이지 요청의 경우 GET을 사용한다)
+        pass
+
+    categories = Category.objects.all()
+    types = EstimatorType.objects.all()
+    context = { 'categories' : categories, 'types' : types}
+    return render(request, 'task/multi_estimator.html', context)
+
+
+def estimator_add(request):
+
+    print(request.POST['type'])
+    #data = json.loads(request.body)
+    #print(data)
+
+    e_type = EstimatorType.objects.filter( type =  request.POST['type'])[0]
+
+    kwargs = e_type.kwargs
+
+
+    form = EstimatorForm()
+
+    categories = to_json(Category.objects.all())
+    types = to_json(EstimatorType.objects.all())
+    context = {'categories' : categories, 'types' : types, 'kwargs' : kwargs}
+
+
+    return JsonResponse(  context  )

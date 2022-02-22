@@ -11,10 +11,10 @@ urlpatterns = [
     # 카테고리
     path('', base_views.index, name='index'),
     path('<int:wrapper_id>/', base_views.detail, name='detail'),
-    path('estimator/create', estimator_views.estimator_create, name='estimator_create'),
-    path('estimator/modify/<int:estimator_id>/', estimator_views.estimator_modify, name='estimator_modify'),
-    path('estimator/delete/<int:estimator_id>/', estimator_views.estimator_delete, name='estimator_delete'),
-    path('estimator/download/<int:estimator_id>', estimator_views.estimator_download, name='estimator_download'),
+    path('create/', estimator_views.estimator_create, name='estimator_create'),
+    path('modify/<int:estimator_id>/', estimator_views.estimator_modify, name='estimator_modify'),
+    path('delete/<int:estimator_id>/', estimator_views.estimator_delete, name='estimator_delete'),
+    path('download/<int:estimator_id>', estimator_views.estimator_download, name='estimator_download'),
 
     path('reply/create/<int:wrapper_id>/', reply_views.reply_create, name='reply_create'),
     path('reply/modify/<int:reply_id>/', reply_views.reply_modify, name='reply_modify'),
@@ -24,6 +24,8 @@ urlpatterns = [
     path('comment/modify/<int:comment_id>/', comment_views.comment_modify, name='comment_modify'),
     path('comment/delete/<int:comment_id>/', comment_views.comment_delete, name='comment_delete'),
 
+    path('multi_estimator_create/create', estimator_views.multi_estimator_create, name='multi'),
+    path('estimator_add/', estimator_views.estimator_add, name='estimator_add'),
 
 ]
 
