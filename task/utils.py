@@ -1,3 +1,4 @@
+from errno import EISDIR
 from openpyxl import load_workbook
 from openpyxl.styles import Border, Side
 from string import ascii_uppercase
@@ -74,11 +75,12 @@ def rgb2hex(rgb):
     return ''.join([ hex(c)[2:].zfill(2) for c in rgb])
 
 
-def render_esitmator(estimator):
-    file_path = os.path.join(BASE_DIR, 'data/invoice_template.xlsx')
-    template = load_workbook(file_path)
 
-    sheet = template['Sheet1']
+def render_estimator_base(sheet, estimator):
+    """
+    sheet, estimator를 받아서 값을 채우기
+
+    """
 
     border1 = Border(bottom=Side(border_style='medium', color=rgb2hex([176, 176, 176])))
     border2 = Border(bottom=Side(border_style='medium', color=rgb2hex([120, 120, 120])))
@@ -106,17 +108,18 @@ def render_esitmator(estimator):
 
         i += 1
 
-    for k, v in estimator.additional_kwargs.items():
-        sheet[f'E{19 + i * 3}'].value = k
-        sheet[f'J{19 + i * 3}'].value = v
-        # load_ws[f'L{14 + i * 3}'].value = 수량인데 일단은 없자낭..
-        sheet[f'M{19 + i * 3}'].value = v
+    if estimator.additional_kwargs:
+        for k, v in estimator.additional_kwargs.items():
+            sheet[f'E{19 + i * 3}'].value = k
+            sheet[f'J{19 + i * 3}'].value = v
+            # load_ws[f'L{14 + i * 3}'].value = 수량인데 일단은 없자낭..
+            sheet[f'M{19 + i * 3}'].value = v
 
-        # 하단 테두리
-        for j in range(4, 15):
-            sheet[f'{ascii_uppercase[j]}{20 + i * 3}'].border = border1
+            # 하단 테두리
+            for j in range(4, 15):
+                sheet[f'{ascii_uppercase[j]}{20 + i * 3}'].border = border1
 
-        i += 1
+            i += 1
 
 
     # 하단 테두리
@@ -140,6 +143,15 @@ def render_esitmator(estimator):
     sheet[f'M{20 + i * 3}'].value = f'=M{19 + i * 3} / 10'
     sheet[f'M{24 + i * 3}'].value = f'=M{19 + i * 3} + M{20 + i * 3}'
 
+
+
+def render_esitmator(estimator):
+    file_path = os.path.join(BASE_DIR, 'data/invoice_template.xlsx')
+    template = load_workbook(file_path)
+
+    sheet = template['Sheet1']
+
+    render_estimator_base(sheet, estimator)
     # 저장
     file_path = os.path.join(BASE_DIR, f'data/{estimator.name}.xlsx')
     img_path = os.path.join(BASE_DIR, f'data/esitmation.png')
@@ -153,3 +165,25 @@ def config_parser(f_name):
     with open(path, 'r+', encoding='utf-8') as f:
         config = json.load(f)
     return config
+
+
+def render_multi_estimator(estimators):
+    file_path = os.path.join(BASE_DIR, 'data/invoice_template.xlsx')
+    template = load_workbook(file_path)
+
+    sheet_origin = template['Sheet1']
+
+    
+
+    for i, estimator in enumerate(estimators):
+        sheet = template.copy_worksheet(sheet_origin)
+        sheet.title = f'title {i}'
+        render_estimator_base(sheet, estimator)
+
+    
+
+    # 저장
+    file_path = os.path.join(BASE_DIR, f'data/{estimator.name}.xlsx')
+    img_path = os.path.join(BASE_DIR, f'data/esitmation.png')
+
+    template.save(file_path)
