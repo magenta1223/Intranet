@@ -1,13 +1,11 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Estimator, EstimatorType
+from .models import *
 
 
-class EstimatorAdmin(admin.ModelAdmin):
+class ContainerAdmin(admin.ModelAdmin):
     search_fields = ['name'] # 아래 register에서 함께 들어간 model DB에서 검색이 가능해짐
-
-
 
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -29,5 +27,5 @@ class EstimatorTypeAdmin(admin.ModelAdmin):
 # 관리자 페이지에서 Question DB를 추가/제거 가능함
 # 상품관련으로 뚝딱 가능하겠네용..
 
-admin.site.register(Estimator, EstimatorAdmin)
+admin.site.register(EstimatorContainer, ContainerAdmin)
 admin.site.register(EstimatorType, EstimatorTypeAdmin)

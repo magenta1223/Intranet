@@ -76,7 +76,7 @@ def rgb2hex(rgb):
 
 
 
-def render_estimator_base(sheet, estimator):
+def render_estimator_base(sheet, estimator, container):
     """
     sheet, estimator를 받아서 값을 채우기
 
@@ -87,9 +87,9 @@ def render_estimator_base(sheet, estimator):
     border3 = Border(bottom=Side(border_style='thick', color=rgb2hex([255, 192, 0])))
 
     # estimator information
-    sheet['B9'] = estimator.id
-    sheet['B12'] = estimator.author.name
-    sheet['B15'] = estimator.create_date.strftime('%Y-%m-%d %H:%M:%S')
+    sheet['B9'] = container.id
+    sheet['B12'] = container.author.name
+    sheet['B15'] = container.create_date.strftime('%Y-%m-%d %H:%M:%S')
 
 
     # 각 항목별 값 채우기
@@ -164,10 +164,14 @@ def config_parser(f_name):
     path = f'task/configs/{f_name}.json'
     with open(path, 'r+', encoding='utf-8') as f:
         config = json.load(f)
-    return config
+
+    name = config['name']
+    del config['name']
+
+    return config, name
 
 
-def render_multi_estimator(estimators):
+def render_container(container):
     file_path = os.path.join(BASE_DIR, 'data/invoice_template.xlsx')
     template = load_workbook(file_path)
 
@@ -175,15 +179,15 @@ def render_multi_estimator(estimators):
 
     
 
-    for i, estimator in enumerate(estimators):
+    for i, estimator in enumerate(container.estimator_set.all()):
         sheet = template.copy_worksheet(sheet_origin)
         sheet.title = f'title {i}'
-        render_estimator_base(sheet, estimator)
+        render_estimator_base(sheet, estimator, container)
 
     
 
     # 저장
-    file_path = os.path.join(BASE_DIR, f'data/{estimator.name}.xlsx')
+    file_path = os.path.join(BASE_DIR, f'data/{container.name}.xlsx')
     img_path = os.path.join(BASE_DIR, f'data/esitmation.png')
 
     template.save(file_path)

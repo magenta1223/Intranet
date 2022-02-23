@@ -9,12 +9,12 @@ from django.conf.urls import include
 
 urlpatterns = [
     # 카테고리
-    path('', base_views.index, name='index'),
-    path('<int:wrapper_id>/', base_views.detail, name='detail'),
-    path('create/', estimator_views.estimator_create, name='estimator_create'),
-    path('modify/<int:estimator_id>/', estimator_views.estimator_modify, name='estimator_modify'),
-    path('delete/<int:estimator_id>/', estimator_views.estimator_delete, name='estimator_delete'),
+    path('<int:wrapper_id>/', base_views.detail, name='detail2'),
+
+
     path('download/<int:estimator_id>', estimator_views.estimator_download, name='estimator_download'),
+    path('download_container/<int:container_id>', estimator_views.container_download, name='container_download'),
+
 
     path('reply/create/<int:wrapper_id>/', reply_views.reply_create, name='reply_create'),
     path('reply/modify/<int:reply_id>/', reply_views.reply_modify, name='reply_modify'),
@@ -24,9 +24,13 @@ urlpatterns = [
     path('comment/modify/<int:comment_id>/', comment_views.comment_modify, name='comment_modify'),
     path('comment/delete/<int:comment_id>/', comment_views.comment_delete, name='comment_delete'),
 
-    path('multi_estimator_create/create', estimator_views.multi_estimator_create, name='multi'),
+    path('create/', estimator_views.container_create, name='container_create'),
     path('estimator_add/', estimator_views.estimator_add, name='estimator_add'),
-    path('estimator_create2/', estimator_views.estimator_create2, name='estimator_create2'),
+    path('estimator_create2/', estimator_views.estimator_create, name='estimator_create'),
+    path('', base_views.multi_index, name='container_index'),
+    path('multi-estimator/<int:wrapper_id>/', base_views.multi_detail, name='detail'),
+
+
 
 ]
 

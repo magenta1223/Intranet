@@ -18,21 +18,13 @@
             </li>
             {% endfor %}
             {% endif %}
+
+
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'task:index' %}"> 견적서 <span class="sr-only"></span></a>
+                <a class="nav-link" href="{% url 'task:container_index' %}"> 멀티견적서 <span class="sr-only"></span></a>
             </li>
 
 
-            <!-- 게시판 내 드롭다운 -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">견적서</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="#">책상</a>
-                    <a class="dropdown-item" href="#">의자</a>
-                    <a class="dropdown-item" href="#">의자1</a>
-                    <a class="dropdown-item" href="#">책상1</a>
-                </div>
-            </li>
         </ul>
         <ul class="navbar-nav" style = "margin-left: auto !important;">
             {% if user.is_authenticated %}

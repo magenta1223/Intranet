@@ -6,13 +6,6 @@ class EstimatorTypeForm(forms.ModelForm):
         model = EstimatorType
         fields =['type']
 
-class EstimatorForm(forms.ModelForm):
-
-    class Meta:
-        model = Estimator
-        fields = ['type']
-
-
 
 class ContainerForm(forms.ModelForm):
 

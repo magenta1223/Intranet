@@ -27,27 +27,21 @@
         </thead>
         <tbody>
 
-        <!-- 질문 목록이 있다면 -->
-        {% if estimator_list %}
-        <!-- 각 질문에 대해서 -->
-        {% for estimator in estimator_list %}
-        <!-- row를 설정하고 -->
+        {% if container_list %}
+        {% for container in container_list %}
         <tr class="text-center">
-            <!-- 정보 표시 시작 -->
-            <!-- 번호 표시 -->
+
             <td style = "text-align: center;vertical-align : middle;">
-                <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
-                {{ estimator_list.paginator.count|sub:estimator_list.start_index|sub:forloop.counter0|add:1 }}
+                {{ container_list.paginator.count|sub:container_list.start_index|sub:forloop.counter0|add:1 }}
             </td>
-            <!-- bulletinboard의 urls에서 detail을 실행, post_id를 인수로 넣음
-            post.subject를 출력-->
+            
             <td class="text-left">
-                <a href="{% url 'task:detail' estimator.wrapper.id %}">{{ estimator.name }}</a>
-                {% if estimator.wrapper.reply_set.count > 0 %}
-                <span class="text-danger small ml-2">{{ estimator.wrapper.reply_set.count }}</span>
+                <a href="{% url 'task:detail' container.wrapper.id %}">{{ container.name }}</a>
+                {% if container.wrapper.reply_set.count > 0 %}
+                <span class="text-danger small ml-2">{{ container.wrapper.reply_set.count }}</span>
                 {% endif %}
                 <br>
-                <small>{{ estimator.author.name }} | {{ estimator.formatted_date }}</small>
+                <small>{{ container.author.name }} | {{ container.formatted_date }}</small>
             </td>
         </tr>
 
@@ -63,10 +57,10 @@
     <!-- 페이징처리 시작 -->
     <ul class="pagination justify-content-center">
         <!-- 이전페이지 -->
-        {% if estimator_list.has_previous %}
+        {% if container_list.has_previous %}
         <li class="page-item">
             <!-- a -->
-            <a class="page-link" data-page="{{ estimator_list.previous_page_number }}" href="#">이전</a>
+            <a class="page-link" data-page="{{ container_list.previous_page_number }}" href="#">이전</a>
         </li>
         {% else %}
         <li class="page-item disabled">
@@ -74,9 +68,9 @@
         </li>
         {% endif %}
         <!-- 페이지리스트 -->
-        {% for page_number in estimator_list.paginator.page_range %}
-        {% if page_number >= estimator_list.number|add:-5 and page_number <= estimator_list.number|add:5 %}
-            {% if page_number == estimator_list.number %}
+        {% for page_number in container_list.paginator.page_range %}
+        {% if page_number >= container_list.number|add:-5 and page_number <= container_list.number|add:5 %}
+            {% if page_number == container_list.number %}
             <li class="page-item active" aria-current="page">
                 <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
             </li>
@@ -88,9 +82,9 @@
         {% endif %}
         {% endfor %}
         <!-- 다음페이지 -->
-        {% if estimator_list.has_next %}
+        {% if container_list.has_next %}
         <li class="page-item">
-            <a class="page-link" data-page="{{ estimator_list.next_page_number }}" href="#">다음</a>
+            <a class="page-link" data-page="{{ container_list.next_page_number }}" href="#">다음</a>
         </li>
         {% else %}
         <li class="page-item disabled">
@@ -99,14 +93,13 @@
         {% endif %}
     </ul>
     <!-- 페이징처리 끝 -->
-    <a href="{% url 'task:estimator_create' %}" class="btn btn-primary">견적서 등록하기</a>
-    <a href="{% url 'task:multi' %}" class="btn btn-warning">멀티견적서</a>
+    <a href="{% url 'task:container_create' %}" class="btn btn-warning">멀티견적서</a>
 
 
 </div>
 
 <!-- search -->
-<form id="searchForm" method="get" action="{% url 'task:index' %}">
+<form id="searchForm" method="get" action="{% url 'task:container_index' %}">
     <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
     <input type="hidden" id="page" name="page" value="{{ page }}">
 </form>

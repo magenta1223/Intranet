@@ -198,3 +198,17 @@ window.onload = function () {
 
 
 
+// form to dictionary 
+function parse_forms(form) {
+    var dict = {};
+    var children = $(form).children('input');
+    console.log(children);
+    for (var i = 0; i < children.length; i ++){
+        dict[ $(children[i]).prop('id') ] = $(children[i]).val();
+        };
+
+    dict['type'] = $(form).children('div').text();
+    console.log(dict);
+    return dict
+
+    }   

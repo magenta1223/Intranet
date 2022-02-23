@@ -32,39 +32,16 @@
             </div>
         {% endif %}
 
-        <span>  1) 모달 띄우기 - Done </span>
-        <br>
-        <span>  2) 일단은, closet을 ''보내놓고'', 선택에 따라 ajax로 변경. - Done  </span>
-        <br>
-        <span>  3) 만약 type이 바뀌면 기존 것은 삭제하고 새 것 추가 - Done </span>
-        <br>
-        <span>  4) 작성 버튼 클릭 시, 화면에 추가 - Done </span>
-        <br>
-        <span>  5) 수정, 삭제 - Done </span>
-        <br>
-        <span>  6) 종합 버튼 클릭 시, multi_estimator_create로 보냄 </span>
-        <br>
-        <span>  6-1) 추가 항목 버튼 </span>
-        <br>
-        <span>  6-2) 누르면 폼이 뜨게 </span>
-        <br>
-        <span>  6-3) 수정 / 삭제 버튼을 그 안으로 옮기고 </span>
-        <br>
-        <span>  6-4) 툴팁 수정 (종류 등을 표시) </span>
-        <br>
-        <span>  7) 각 estimator별로 model 작성, container도 작성 및 저장 </span>
-        <br>
-
 
         <button type="button" id = "add-button" class="btn btn-info" style ="margin-bottom:10px;">추가 항목 작성 &nbsp;<span style="font-size:16px; font-weight:bold;">+ </span></button>
         <br>
 
 
-        <button  id = "submit" class="btn btn-primary">견적서 작성하기</button>
+        <button  id = "submit-estimator" class="btn btn-primary"> 저장하기 </button>
 
         <!-- modal 구동 버튼 (trigger) -->
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">
-  Modal 띄우기
+  개별 품목 견적서 작성하기
 </button>
 
 
@@ -123,9 +100,10 @@ var container = $('#form123');
 var estimator_count = 0;
 var edit = false; // 수정할 estimator를 알려주는 역할
 var parsed_forms = {};
+var type = document.getElementById('type');//$('#type');
+var type_div = $('#type_div');
 
 $(document).ready(function(){
-    var type = document.getElementById('type');
 
     type.addEventListener('change', function() {
         let val = type.value;
@@ -142,8 +120,8 @@ $(document).ready(function(){
 
                 // type의 부모 노드의 자식노드 (이전에 선택한 견적서 타입에 따라 추가한 form-group들)을 지움
 
-                var type = $('#type_div');
-                var children = type.parent().children('.form-group').not('#type_div').remove();
+                //var type = $('#type_div');
+                var children = type_div.parent().children('.form-group').not('#type_div').remove();
 
 
                 // 받아온 데이터의 kwargs를 추가
@@ -160,7 +138,7 @@ $(document).ready(function(){
 
                         structure = $(structure);
 
-                        $(type).after(structure);
+                        $(type_div).after(structure);
                         };
 
                     }
@@ -175,8 +153,6 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     var modal_btn = document.getElementById('submit-modal');  //$('#submit-modal');
-    var type = document.getElementById('type');
-
 
     modal_btn.addEventListener('click', function() {
 
@@ -198,13 +174,10 @@ $(document).ready(function(){
         $(modal_btn).parents(".modal-content").find("input[name!='csrfmiddlewaretoken']").each(function(){
             structure = structure +  '<input hidden id="' + $(this).prop('id') + '" class = "' + $(this).prop('class') +'" value="' + $(this).val() + '" min = "' + $(this).prop('min') + '" max = "'+ $(this).prop('max') + '" name ="'+ $(this).prop('name') + '" type = "' + $(this).prop('type') + '">'
             });
-        
         structure = structure + '<div hidden>' + $(modal_btn).parents(".modal-content").find('#type').val() +'</div>'
-
         structure = structure + '</form>'
         structure = structure + '</div></div></div>'
     
-        // To JQuery object
         structure = $(structure);
         
         // 수정 or 신규작성
@@ -221,17 +194,14 @@ $(document).ready(function(){
 
         delete_btn.addEventListener('click', function(){
             $(this).parents().eq(2).remove(); // 위로 2번째 element 삭제
-            //estimator_count--;
             });
 
         modify_btn.addEventListener('click', function(){
             // load hidden form value
             var values = $(modify_btn).parent('div').find('input');
             // modal form init
-            var type = $('#type');
-            var type_div = $('#type_div');
-            type.parent().children('.form-group').not('#type_div').remove();
-            type.val($(modify_btn).parent('div').find('div').text());
+            $(type).parent().children('.form-group').not('#type_div').remove();
+            $(type).val($(modify_btn).parent('div').find('div').text());
 
             // id of element now edited
             edit = $(modify_btn).parent('div').children('form').prop('id');
@@ -258,29 +228,17 @@ $(document).ready(function(){
     });
 
 
-$(document).ready(function(){       
-    
-    // modal-form이 닫힐 때, 초기화
-    
+$(document).ready(function(){           
     $('#modal').on('hide.bs.modal', function () {
-        // 수정 취소
         edit = false;
-
-        // type_div만 남기고 전부 지움
-        var type_div = $('#type_div');
         type_div.parent().children('.form-group').not('#type_div').remove();
-
-        // type selecte reset
-        var type = $('#type');
-        var default_option = $('#default_option')
-        type.val('default');
-
+        $(type).val('default');
         }); 
     });
 
 
 $(document).ready(function(){
-    $('#submit').on('click', function(){
+    $('#submit-estimator').on('click', function(){
         // 문서내에 존재하는 숫자 아이디를 가진 폼을 전부 반환
         var all_forms = $(document).find('form').not('.post-form');
         
@@ -288,34 +246,22 @@ $(document).ready(function(){
             parsed_forms[i] =  parse_forms(all_forms[i])
             }    
 
-        
-
-        //parsed_forms['csrfmiddlewaretoken'] = '{{csrf_token}}'
-
         var param = {'data' : JSON.stringify(parsed_forms), 'csrfmiddlewaretoken' : '{{csrf_token}}'}
 
         $.ajax({
-            url : "{% url 'task:estimator_create2' %}",
+            url : "{% url 'task:estimator_create' %}",
             type : 'POST',
             datatype: 'json',
             data : param,
-            
-
+        
             success: function(data){
                 console.log('성공^');
-
                 },
             error : function(){
                 console.log('error');
                 }
             });
-
-        
-
-
         });
-
-
     });
 
 

@@ -165,6 +165,7 @@ class Wrapper(models.Model):
     """
     post = models.OneToOneField(Post, on_delete=models.CASCADE, null = True)
     estimator = models.OneToOneField(Estimator, on_delete=models.CASCADE, null = True)
+    container = models.OneToOneField(EstimatorContainer, on_delete=models.CASCADE, null = True)
 
     app_name = models.CharField(max_length= 30)
     content_name = models.CharField(max_length= 30)
