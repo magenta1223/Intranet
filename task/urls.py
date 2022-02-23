@@ -26,7 +26,7 @@ urlpatterns = [
 
     path('multi_estimator_create/create', estimator_views.multi_estimator_create, name='multi'),
     path('estimator_add/', estimator_views.estimator_add, name='estimator_add'),
-    path('create2/', estimator_views.estimator_create2, name='estimator_create2'),
+    path('estimator_create2/', estimator_views.estimator_create2, name='estimator_create2'),
 
 ]
 

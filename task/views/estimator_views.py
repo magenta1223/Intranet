@@ -120,42 +120,16 @@ def estimator_download(request, estimator_id):
 @login_required(login_url='common:login')
 def multi_estimator_create(request):
     if request.method == 'POST':
-        form = EstimatorForm(request.POST)
-        if form.is_valid():
-            # form.cleaned_data['subject']
-
-            estimator = form.save(commit=False)
-            estimator.author = request.user
-            estimator.create_date = timezone.now()
-            estimator.type = form.cleaned_data['type']
-            estimator.name = f"{request.POST['customer']}-{request.POST['type']}-{timezone.now().strftime('%Y-%m-%d %H')}"
-            # subclass도 가져오고, 해당 subclass의 field를 가져와서
-            estimator.kwargs = { k : v for k, v in request.POST.items() if k != 'csrfmiddlewaretoken' and 'additional' not in k}
-            additional_kwargs = { k : v for k, v in request.POST.items() if 'additional' in k }
-            estimator.additional_kwargs = { additional_kwargs[f'additional_key{i}'] : additional_kwargs[f'additional_val{i}'] for i in range(1, (len(additional_kwargs) // 2) + 1)}
-
-            prices = calc_closet(estimator.kwargs)
-            estimator.prices = prices
-            estimator.save()
-
-            wrapper = Wrapper(estimator = estimator, create_date = estimator.create_date, author = estimator.author, app_name = 'task', content_name = 'estimator')
-            wrapper.save()
-            #render_esitmator(estimator)
-
-            return redirect('task:index')
+        return redirect('task:index')
     else:
         # 처음 접근 시, GET을 사용 (링크를 통한 페이지 요청의 경우 GET을 사용한다)
-        pass
+        categories = Category.objects.all()
+        types = EstimatorType.objects.all()
 
-    categories = Category.objects.all()
-    types = EstimatorType.objects.all()
+        context = { 'categories' : categories, 'types' : types}
+        return render(request, 'task/multi_estimator.html', context)
 
-    print(types[0].kwargs)
-
-    context = { 'categories' : categories, 'types' : types}
-    return render(request, 'task/multi_estimator.html', context)
-
-
+@login_required(login_url='common:login')
 def estimator_add(request):
     """
     Add new estimator in multi-estimator container
@@ -168,52 +142,57 @@ def estimator_add(request):
     types = to_json(EstimatorType.objects.all())
     context = {'categories' : categories, 'types' : types, 'kwargs' : kwargs}
 
-
     return JsonResponse(  context  )
-
-
-
 
 @login_required(login_url='common:login')
 def estimator_create2(request):
+    """
+    Create estimators
+    """
 
-    #print(json.loads(request.POST['json']))
-
-
-    estimator_kwargs= request.POST.dict()#json.loads(request.POST)
-
-    type = estimator_kwargs['type']   
-    del  estimator_kwargs['type'],estimator_kwargs['csrfmiddlewaretoken']
+    data = json.loads(request.POST.dict()['data'])
+    
+    container = EstimatorContainer(
+        author = request.user,
+        create_date = timezone.now(),
+        name = 'test'
+    )
+    
+    container.save()
     
 
-    estimator = Estimator(kwargs= estimator_kwargs)
+    for k, v in data.items():
+        v['type']
 
-    estimator.author = request.user
-    estimator.create_date = timezone.now()
-    estimator.type = type
-    estimator.name = 'test' #f"{request.POST['customer']}-{request.POST['type']}-{timezone.now().strftime('%Y-%m-%d %H')}"
-    # subclass도 가져오고, 해당 subclass의 field를 가져와서
-    #additional_kwargs = { k : v for k, v in request.POST.items() if 'additional' in k }
-    #estimator.additional_kwargs = { additional_kwargs[f'additional_key{i}'] : additional_kwargs[f'additional_val{i}'] for i in range(1, (len(additional_kwargs) // 2) + 1)}
+        estimator = Estimator(
+            author = request.user,
+            create_date = timezone.now(),
+            type = v['type'],
+            name = 'test'
+        )
 
-    prices = calc_closet(estimator.kwargs)
-    estimator.prices = prices    
-    estimator.save()
+        del v['type']
 
-    wrapper = Wrapper(estimator = estimator, create_date = estimator.create_date, author = estimator.author, app_name = 'task', content_name = 'estimator')
-    wrapper.save()
+        estimator.kwargs = v
+        #estimator.name = f"{request.POST['customer']}-{request.POST['type']}-{timezone.now().strftime('%Y-%m-%d %H')}"
+        # subclass도 가져오고, 해당 subclass의 field를 가져와서
+        #estimator.kwargs = { k : v for k, v in request.POST.items() if k != 'csrfmiddlewaretoken' and 'additional' not in k}
+        #additional_kwargs = { k : v for k, v in request.POST.items() if 'additional' in k }
+        #estimator.additional_kwargs = { additional_kwargs[f'additional_key{i}'] : additional_kwargs[f'additional_val{i}'] for i in range(1, (len(additional_kwargs) // 2) + 1)}
+        
+        # func_dict에서 가져와서 쓰도록
+        prices = calc_closet(estimator.kwargs)
+        estimator.prices = prices
+        estimator.save()
+        wrapper = Wrapper(estimator = estimator, create_date = estimator.create_date, author = estimator.author, app_name = 'task', content_name = 'estimator')
+        wrapper.save()
 
-    
+        container.estimator_set.add(estimator)
 
+    container.save()    
 
-    #estimator_kwargs = json.loads(request.POST['json'])
-    
-
-    context = {'id' : wrapper.id}
-
-    return JsonResponse(  context  )
+    return JsonResponse(  {}  )
 
 
 
 
-    #return redirect('task:index')

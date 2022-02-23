@@ -13,7 +13,6 @@ class EstimatorContainer(models.Model):
     create_date = models.DateTimeField(verbose_name= '작성일자')
     modify_date = models.DateTimeField(verbose_name= '수정일자',null=True, blank=True)
 
-
     name = models.CharField(verbose_name = '견적서 뭉치 명', max_length= 200, null=True)
 
     class Meta:
