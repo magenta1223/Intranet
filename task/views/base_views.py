@@ -70,6 +70,5 @@ def multi_detail(request, wrapper_id):
     container = wrapper.container
     categories = Category.objects.all()
     context = {'categories': categories, 'container' : container}
-    print('cex')
 
     return render(request, 'task/container_detail.html', context)

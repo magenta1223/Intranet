@@ -360,8 +360,14 @@ function parse_forms(form) {
     var children = $(form).children('input');
     console.log(children);
     for (var i = 0; i < children.length; i ++){
-        dict[ $(children[i]).prop('id') ] = $(children[i]).val();
-        };
+            var additional_dict = {};
+            additional_dict['name'] = $(children[i]).prop('name');
+            additional_dict['value'] = $(children[i]).val();
+
+            dict[ $(children[i]).prop('id') ] = additional_dict;
+    }
+
+
 
     dict['type'] = $(form).children('div').text();
     console.log(dict);

@@ -80,6 +80,14 @@ def estimator_add(request):
 def estimator_create(request):
     """
     Create estimators
+
+    수량 추가
+    견적서 보기 예쁘게 다듬고
+    네이밍 룰하고
+
+    알림 기능
+    정도 .. ? 
+
     """
 
     data = json.loads(request.POST.dict()['data'])
@@ -102,20 +110,21 @@ def estimator_create(request):
 
         del v['type']
 
-        estimator.kwargs = v
-        #estimator.name = f"{request.POST['customer']}-{request.POST['type']}-{timezone.now().strftime('%Y-%m-%d %H')}"
-        # subclass도 가져오고, 해당 subclass의 field를 가져와서
-        #estimator.kwargs = { k : v for k, v in request.POST.items() if k != 'csrfmiddlewaretoken' and 'additional' not in k}
-        #additional_kwargs = { k : v for k, v in request.POST.items() if 'additional' in k }
-        #estimator.additional_kwargs = { additional_kwargs[f'additional_key{i}'] : additional_kwargs[f'additional_val{i}'] for i in range(1, (len(additional_kwargs) // 2) + 1)}
+        # key값을 유지해야함
+        # 근데 보여줄 때는 name으로 보여줘야 한다
         
+        kwargs = { _k : int(_v['value']) for _k, _v in v.items() if 'add' not in _k}
+        estimator.kwargs = { _v['name'] : int(_v['value']) for _k, _v in v.items() if 'add' not in _k}
+        estimator.additional_kwargs = {_v['name'] : int(_v['value']) for _k, _v in v.items() if 'add' in _k}
+
         # func_dict에서 가져와서 쓰도록
-        prices = FUNC_DICT[estimator.type](estimator.kwargs)
+        prices = FUNC_DICT[estimator.type](kwargs)
         estimator.prices = prices
         estimator.save()
 
 
         container.estimator_set.add(estimator)
+
 
     container.save()    
     wrapper = Wrapper(container = container, create_date = timezone.now(), author = request.user, app_name = 'task', content_name = 'container')

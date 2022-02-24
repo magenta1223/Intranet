@@ -88,7 +88,7 @@ def calc_closet(estimator):
 
     total = shelves + walls + back + doors
 
-    return {'shelves' : shelves, 'walls' : walls, 'back' : back, 'doors' : doors, 'total' : total}
+    return {'선반 가격' : shelves, '세로 벽 가격' : walls, '뒷판 가격' : back, '문 가격' : doors, '총합' : total}
 
 
 
@@ -105,10 +105,10 @@ def render_estimator_base(sheet, estimator, container):
     border3 = Border(bottom=Side(border_style='thick', color=rgb2hex([255, 192, 0])))
 
     # estimator information
-    sheet['B9'] = container.id
+    sheet['B9'] = estimator.id
     sheet['B12'] = container.author.name
     sheet['B15'] = container.create_date.strftime('%Y-%m-%d %H:%M:%S')
-
+    sheet['E5'] = estimator.type
 
     # 각 항목별 값 채우기
     i = 0
@@ -166,7 +166,7 @@ def render_container(container):
     file_path = os.path.join(BASE_DIR, 'data/invoice_template.xlsx')
     template = load_workbook(file_path)
 
-    sheet_origin = template['Sheet1']
+    sheet_origin = template['Sheet2']
 
     
 
