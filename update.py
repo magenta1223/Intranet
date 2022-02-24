@@ -1,5 +1,3 @@
-# 뭐.. config나 이런거 자동으로 등록하도록
-
 from task.models import EstimatorType
 from task.utils import config_parser
 import os
@@ -20,5 +18,4 @@ def main():
     else:
         print('Already up to date')
 
-if __name__ == '__main__':
-    main()
+main()
