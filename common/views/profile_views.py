@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
 from django.utils import timezone
-from event.utils import *
+from utils import *
 from django.http import JsonResponse, HttpResponse
 
 import json

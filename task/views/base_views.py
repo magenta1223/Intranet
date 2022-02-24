@@ -11,9 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 # donwload
-from common.utils import is_authenticated
 from config.settings import BASE_DIR
-
+from utils import *
 
 
 @login_required(login_url='common:login')

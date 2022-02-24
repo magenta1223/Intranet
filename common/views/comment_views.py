@@ -5,9 +5,8 @@ from django.utils import timezone
 
 from ..forms import CommentForm
 from ..models import Comment, Reply
-from common.utils import is_authenticated
 from bulletinboard.models import Category
-
+from utils import *
 
 @login_required(login_url='common:login')
 def comment_create(request, reply_id):

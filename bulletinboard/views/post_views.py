@@ -7,7 +7,7 @@ from django.db.models import Q
 from ..forms import PostForm
 from ..models import Post, Category
 from common.models import Wrapper
-from common.utils import is_authenticated
+from utils import *
 
 
 @login_required(login_url='common:login')

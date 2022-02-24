@@ -15,10 +15,9 @@ from django.http import JsonResponse, HttpResponse
 from common.utils import to_json
 
 # estimator func
-from ..utils import *
 import json
 # donwload
-from common.utils import *
+from utils import *
 from config.settings import BASE_DIR
 
 
@@ -95,7 +94,7 @@ def estimator_create(request):
     
 
     for k, v in data.items():
-        v['type']
+        
 
         estimator = Estimator(
             type = v['type'],
@@ -111,7 +110,7 @@ def estimator_create(request):
         #estimator.additional_kwargs = { additional_kwargs[f'additional_key{i}'] : additional_kwargs[f'additional_val{i}'] for i in range(1, (len(additional_kwargs) // 2) + 1)}
         
         # func_dict에서 가져와서 쓰도록
-        prices = calc_closet(estimator.kwargs)
+        prices = FUNC_DICT[estimator.type](estimator.kwargs)
         estimator.prices = prices
         estimator.save()
 

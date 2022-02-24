@@ -6,8 +6,7 @@ from common.models import Wrapper
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from common.utils import is_authenticated
-
+from utils import *
 
 
 

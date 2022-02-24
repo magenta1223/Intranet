@@ -7,8 +7,7 @@ from ..forms import ReplyForm
 from ..models import Wrapper, Reply
 from bulletinboard.models import Category
 
-from common.utils import is_authenticated
-
+from utils import *
 
 @login_required(login_url='common:login')
 def reply_create(request, wrapper_id):

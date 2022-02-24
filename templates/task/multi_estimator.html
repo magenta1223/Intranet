@@ -33,7 +33,6 @@
         {% endif %}
 
 
-        <button type="button" id = "add-button" class="btn btn-info" style ="margin-bottom:10px;">추가 항목 작성 &nbsp;<span style="font-size:16px; font-weight:bold;">+ </span></button>
         <br>
 
 
@@ -50,11 +49,11 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Modal 제목</h4>
+                <h4 class="modal-title" id="myModalLabel">개별 품목 견적</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body">Modal 내용
-                <form method="post" class="post-form my-3" id = "tttttt">
+            <div class="modal-body">
+                <form method="post" class="post-form my-3">
                     {{form.media}}
                     {% csrf_token %}
                     {% if form.errors %}
@@ -69,26 +68,75 @@
                     {% endif %}
 
                     <div class="form-group" id = "type_div">
-                        <label for="type">type</label>
+                        <label for="type">품목</label>
                         <select class="form-control" name="type" id="type" aria-label=".form-select-lg example" required>
-                            <option id = "default_option" value= "default" disabled selected hidden>type select</option>
+                            <option id = "default_option" value= "default" disabled selected hidden> 품목을 선택하세요</option>
                             {% for type in types%}
                             <option value= {{type.type}}>{{type.name}}</option>
                             {% endfor %}
                         </select>
                     </div>
 
+                    <div id ="modal-last" hidden ></div>
+
                 </form>
             </div>
 
 
             <div class="modal-footer">
-                <button id = "submit-modal" type='button' class="btn btn-primary">제출하기</button>
+                <button type="button" id = "add-button" class="btn btn-info" data-toggle="modal" data-target="#modal-additional" >추가 항목 작성 &nbsp;<span style="font-size:16px; font-weight:bold;">+ </span></button>
+                <button id = "submit-modal" type='button' class="btn btn-primary" style = "margin-left: auto !important;">제출하기</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
             </div>
         </div>
     </div>
 </div>
+
+
+
+<!-- Additional Modal -->
+<div class="modal fade" id="modal-additional" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">추가항목 입력</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="post-form my-3">
+                    {{form.media}}
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                        {% for field in form %}
+                            {% if field.errors %}
+                            <strong>{{ field.label }}</strong>
+                            {{ field.errors }}
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for = "additional">이름</label>
+                        <input class="form-control" type="text" >
+                    </div>
+                    <div class="form-group">
+                        <label for = "additional">가격</label>
+                        <input class="form-control" type="number">
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="modal-footer">
+                <button id = "submit-additional" type='button' class="btn btn-primary" style = "margin-left: auto !important;">저장하기</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block script %}
@@ -102,9 +150,15 @@ var edit = false; // 수정할 estimator를 알려주는 역할
 var parsed_forms = {};
 var type = document.getElementById('type');//$('#type');
 var type_div = $('#type_div');
+var modal_last = $('#modal-last');
+var additional_modal = $('#modal-additional')
+var additional_count = 1;
+
+
 
 $(document).ready(function(){
 
+    // type 선택 시 그에 따른 kwargs 제공
     type.addEventListener('change', function() {
         let val = type.value;
         let param = {'type' : val,
@@ -138,7 +192,7 @@ $(document).ready(function(){
 
                         structure = $(structure);
 
-                        $(type_div).after(structure);
+                        $(modal_last).before(structure);
                         };
 
                     }
@@ -148,12 +202,11 @@ $(document).ready(function(){
                 }
             });
         });
-    });
 
 
-$(document).ready(function(){
     var modal_btn = document.getElementById('submit-modal');  //$('#submit-modal');
-
+    
+    // 모달 폼 제출 시, 종합 견적에 추가
     modal_btn.addEventListener('click', function() {
 
         // save modal form
@@ -216,7 +269,7 @@ $(document).ready(function(){
                 structure = structure + value.outerHTML.replace('hidden', '');
                 structure = structure + '</div>';
                 structure = $(structure)
-                type_div.after(structure);
+                modal_last.before(structure);
                 }
             });
 
@@ -225,19 +278,54 @@ $(document).ready(function(){
         $('#modal').modal('hide');
 
         });
-    });
+    
+    // 추가항목 모달 폼 제출 시, 개별 견적 모달 폼에 해당 내용을 input 그룹으로 추가
+    var additional_modal_btn = document.getElementById('submit-additional');  //$('#submit-modal');
+    
+    // 모달 폼 제출 시, 종합 견적에 추가
+    additional_modal_btn.addEventListener('click', function() {
 
 
-$(document).ready(function(){           
+        var children = additional_modal.find('.form-control');
+        var name = $(children[0]).val();
+        var val = $(children[1]).val();
+
+
+        var structure = '';
+
+        structure = structure + '<div class="form-group">' ;
+        structure = structure + '<label for="' + name + '">' + name + '</label>';
+        structure = structure + '<input id = "add-' + additional_count  + '" type="number" class="form-control" name="' + name + '"rows="10" value="' + val + '" min="0">';
+        structure = structure + '</div>'
+        
+
+        modal_last.before(structure);
+        additional_modal.modal('hide');
+        
+        
+
+        });
+
+    // 모달 폼 닫을 때 폼 초기화
     $('#modal').on('hide.bs.modal', function () {
         edit = false;
         type_div.parent().children('.form-group').not('#type_div').remove();
         $(type).val('default');
         }); 
-    });
+
+    // 모달 폼 닫을 때 폼 초기화
+    additional_modal.on('hide.bs.modal', function () {
+
+        var children = additional_modal.find('.form-control');
+        var name = $(children[0]).val('');
+        var val = $(children[1]).val('');
+
+        }); 
 
 
-$(document).ready(function(){
+
+    // 제출 시 모든 견적서를 저장하고, 컨테이너로 묶음.
+    // json을 끼워 보내는 법을 몰라서.. 일단 ajax로 한번 갔다온 다음 그냥 제출
     $('#submit-estimator').on('click', function(){
         // 문서내에 존재하는 숫자 아이디를 가진 폼을 전부 반환
         var all_forms = $(document).find('form').not('.post-form');
@@ -262,6 +350,7 @@ $(document).ready(function(){
                 }
             });
         });
+
     });
 
 
@@ -279,6 +368,7 @@ function parse_forms(form) {
     return dict
 
     }   
+
 
 
 </script>

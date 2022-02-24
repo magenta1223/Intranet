@@ -15,7 +15,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 # donwload
-from common.utils import is_authenticated
+from utils import *
 from config.settings import BASE_DIR
 
 
