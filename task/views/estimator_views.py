@@ -22,19 +22,6 @@ from config.settings import BASE_DIR
 
 
 
-
-@login_required(login_url='common:login')
-def estimator_download(request, estimator_id):
-
-    # 처음 접근 시, GET을 사용 (링크를 통한 페이지 요청의 경우 GET을 사용한다)
-    estimator = get_object_or_404(Estimator, pk = estimator_id)
-
-    render_esitmator(estimator)
-
-    file_path = os.path.join(BASE_DIR, f'data/{estimator.name}.xlsx')
-
-    return download(request, file_path, f'{estimator.name}.xlsx')
-
 @login_required(login_url='common:login')
 def container_download(request, container_id):
 

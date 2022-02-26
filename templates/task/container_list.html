@@ -36,7 +36,7 @@
             </td>
             
             <td class="text-left">
-                <a href="{% url 'task:detail' container.wrapper.id %}">{{ container.name }}</a>
+                <a href="{% url 'task:container_detail' container.wrapper.id %}">{{ container.name }}</a>
                 {% if container.wrapper.reply_set.count > 0 %}
                 <span class="text-danger small ml-2">{{ container.wrapper.reply_set.count }}</span>
                 {% endif %}

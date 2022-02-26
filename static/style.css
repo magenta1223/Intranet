@@ -1,16 +1,61 @@
+/* 화면 넓게 */
+.container-fluid {
+    width: 80% !important;
+}
+
+/* 답글용 */
 .comment {
     border-top:dotted 1px #ddd;
     font-size:0.7em;
 }
 
+/* place holder처럼 */
 select option[value=""][disabled] {
 	display: none;
 }
 
+/* tooltip box */
 .tippy-box{
-  width:600px;
+    width:600px;
 }
 
+.tippy-box[data-theme~='custom'] {
+    background-color: #ffffff;
+    color: #000000;
+    border-top-width : 10px!important;
+    border-top-color : #eb1f1f!important;
+  }
+
+.tippy-box[data-theme~='transparent'] {
+    background-color: rgba(0,0,0,0);
+    color:rgba(0,0,0,0);
+  }
+
+.tippy-content[data-theme~='transparent'] {
+    background-color: rgba(0,0,0,0);
+    padding: 0px, !important;;
+
+}
+
+.ct {
+    border-style: solid none none none !important;
+    border-top-width : 10px!important;
+    border-radius: 4px;
+    background-color: #fdfdfd ;
+    --shadow-color: rgb(185, 185, 185);
+    filter: drop-shadow(
+      1px 2px 8px var(--shadow-color)
+    );
+    
+
+}
+
+.ct-content {
+    color:#000000;
+    margin-left: 10px!important;
+}
+
+/* event button */
 .badgebox
 {
     opacity: 0;
@@ -18,20 +63,13 @@ select option[value=""][disabled] {
 
 .badgebox + .badge
 {
-    /* Move the check mark away when unchecked */
     text-indent: -999999px;
-    /* Makes the badge's width stay the same checked and unchecked */
 	width: 27px;
 }
 
 .badgebox:focus + .badge
 {
-    /* Set something to make the badge looks focused */
-    /* This really depends on the application, in my case it was: */
-
-    /* Adding a light border */
     box-shadow: inset 0px 0px 5px;
-    /* Taking the difference out of the padding */
 }
 
 .badgebox:checked + .badge
@@ -40,7 +78,160 @@ select option[value=""][disabled] {
 	text-indent: 0;
 }
 
-.fc-toolbar-chunk {
-  display: flex; /* 일렬로 나란히 */
-  align-items: center; /* 일렬로 나란히 */
+
+
+
+
+
+@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+body, talbe, th, td, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6,
+	pre, form, fieldset, textarea, blockquote, span, * {
+	font-family: 'Noto Sans KR', sans-serif;
 }
+
+@font-face {font-family: 'Noto Sans KR';font-style: normal;
+    font-weight: 100;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff2) 
+    format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff) 
+    format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.otf) format('opentype');}
+    
+    @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 300;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) 
+    format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) 
+    format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype');}
+    
+    @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 400;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff2) 
+    format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) 
+    format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.otf) format('opentype');}
+    
+    @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 500;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.otf) format('opentype');}
+    
+    @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 700;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) 
+    format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) 
+    format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format('opentype');}
+    
+    @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 900;
+    src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff2) 
+    format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff)
+    format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.otf) format('opentype');}
+
+
+/* 툴바 */
+.fc-toolbar-chunk {
+    display: flex; /* 일렬로 나란히 */
+    align-items: center; /* 일렬로 나란히 */
+    }
+
+/* 주말 색상 변경 */
+.fc-day a.fc-col-header-cell-cushion {color: #565b61}
+.fc-day-sun a.fc-col-header-cell-cushion {color:#f32f66}
+.fc-day-sat a.fc-col-header-cell-cushion {color:#2f91f3}
+.fc-day a.fc-daygrid-day-number {color:#565b61}
+.fc-day-sun a.fc-daygrid-day-number {color:#f32f66}
+.fc-day-sat a.fc-daygrid-day-number {color:#2f91f3}
+
+
+
+.fc-toolbar-chunk {
+    display: flex; /* 일렬로 나란히 */
+    align-items: center; /* 일렬로 나란히 */
+}
+
+/* 달력 prev, next 버튼 둥글게 */
+button.fc-button{
+border-radius: 30px;
+}
+button.fc-prev-button.btn.btn-primary{
+border-radius: 30px;
+background-color: #ffffff!important;
+border-color: #DCDCDC!important;
+}
+button.fc-next-button.btn.btn-primary{
+border-radius: 30px;
+background-color: #ffffff!important;
+border-color: #DCDCDC!important;
+}
+
+/* 달력 버튼 색상변경 */
+button.fc-prev-button.btn.btn-primary > span{
+color : #9C9C9C!important;
+}
+button.fc-next-button.btn.btn-primary > span{
+color : #9C9C9C!important;
+}
+
+/* 우측 버튼 색상 변경 */
+button.fc-dayGridMonth-button.btn.btn-primary {
+background-color: #ffffff!important;
+color: #3C3C3C!important;
+border-color: #DCDCDC!important;
+}
+button.fc-timeGridWeek-button.btn.btn-primary {
+background-color: #ffffff!important;
+color: #3C3C3C!important;
+border-color: #DCDCDC!important;
+}
+button.fc-timeGridDay-button.btn.btn-primary {
+background-color: #ffffff!important;
+color: #3C3C3C!important;
+border-color: #DCDCDC!important;
+}
+button.fc-listWeek-button.btn.btn-primary {
+background-color: #ffffff!important;
+border-color: #DCDCDC!important;
+color: #3C3C3C!important;
+}
+
+/* 툴바 모바일 최적화 */
+.fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk {
+    margin-top:10px;
+}
+
+@media(max-width: 700px) {
+
+
+    .fc-toolbar.fc-header-toolbar {
+        display: flex;
+        flex-direction: column;
+        font-size: 70%
+        }
+
+
+    .fc .fc-toolbar-title {
+        font-size: 1.75em;
+        margin: 0;
+        width:100%;
+        float:left;
+        text-align:left;
+        vertical-align:middle !important;
+        }
+    .fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk {
+        margin-top:10px;
+        width:100%;
+    }
+
+    .fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk > button {
+        float:right!important;
+    }
+
+    .fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk > .btn-group {
+        width:100%;
+    }
+}
+
+
+/* 툴팁 색상 표시 */
+
+.circle {
+    border-radius: 50%;
+    width:10px;
+    height:10px;
+    margin-top:4px;
+}
+
+

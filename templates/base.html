@@ -13,8 +13,7 @@
     <link rel="stylesheet"  href="{% static 'style.css' %}">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
-    <link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
     <!-- JS -->
@@ -22,9 +21,9 @@
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"></script>
-    <script src="/static/utils.js"></script>
-    <script src="/static/calendar.js"></script>
-    <!--<script src="/static/canvas.js"></script> -->
+    <script src="/static/utils.js?v=<%=System.currentTimeMillis()%>"></script>
+    <script src="/static/calendar.js?v=<%=System.currentTimeMillis()%>"></script>
+    <script src="/static/canvas.js?v=<%=System.currentTimeMillis()%>"></script>
 
 
 
@@ -47,100 +46,7 @@
 
 
     <style>
-        .fc-day a.fc-col-header-cell-cushion {color: #565b61}
-        .fc-day-sun a.fc-col-header-cell-cushion {color:#f32f66}
-        .fc-day-sat a.fc-col-header-cell-cushion {color:#2f91f3}
-        .fc-day a.fc-daygrid-day-number {color:#565b61}
-        .fc-day-sun a.fc-daygrid-day-number {color:#f32f66}
-        .fc-day-sat a.fc-daygrid-day-number {color:#2f91f3}
-        .tippy-box{
-          width:600px;
-        }
-
-        .container-fluid {
-          width: 80% !important;
-        }
-        .fc-toolbar-chunk {
-          display: flex; /* 일렬로 나란히 */
-          align-items: center; /* 일렬로 나란히 */
-        }
-
-
-        button.fc-button{
-        border-radius: 30px;
-        }
-        button.fc-prev-button.btn.btn-primary{
-        border-radius: 30px;
-        background-color: #ffffff!important;
-        border-color: #DCDCDC!important;
-        }
-        button.fc-next-button.btn.btn-primary{
-        border-radius: 30px;
-        background-color: #ffffff!important;
-        border-color: #DCDCDC!important;
-
-        }
-
-        button.fc-prev-button.btn.btn-primary > span{
-        color : #9C9C9C!important;
-        }
-        button.fc-next-button.btn.btn-primary > span{
-        color : #9C9C9C!important;
-        }
-
-        button.fc-dayGridMonth-button.btn.btn-primary {
-        background-color: #ffffff!important;
-        color: #3C3C3C!important;
-        border-color: #DCDCDC!important;
-        }
-        button.fc-timeGridWeek-button.btn.btn-primary {
-        background-color: #ffffff!important;
-        color: #3C3C3C!important;
-        border-color: #DCDCDC!important;
-        }
-        button.fc-timeGridDay-button.btn.btn-primary {
-        background-color: #ffffff!important;
-        color: #3C3C3C!important;
-        border-color: #DCDCDC!important;
-        }
-        button.fc-listWeek-button.btn.btn-primary {
-        background-color: #ffffff!important;
-        border-color: #DCDCDC!important;
-        color: #3C3C3C!important;
-        }
-        .fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk {
-            margin-top:10px;
-        }
-
-        @media(max-width: 700px) {
-
-
-            .fc-toolbar.fc-header-toolbar {
-                display: flex;
-                flex-direction: column;
-                font-size: 70%
-                }
-
-
-            .fc .fc-toolbar-title {
-                font-size: 1.75em;
-                margin: 0;
-                width:100%;
-                float:left;
-                text-align:left;
-                vertical-align:middle !important;
-              }
-            .fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk {
-                margin-top:10px;
-                width:100%;
-            }
-
-            .fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk > button {
-                float:right!important;
-            }
-            .fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk > .btn-group {
-                width:100%;
-            }
+ 
 
 
 

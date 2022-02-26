@@ -37,7 +37,7 @@ class VacationAdmin(admin.ModelAdmin):
 class TaskAdmin(admin.ModelAdmin):
     form = TaskForm
     fieldsets = (
-            ('기본정보', {'fields': ( 'name', 'config', 'start', 'end', 'users')}),
+            ('기본정보', {'fields': ( 'name', 'config', 'start', 'end', 'users', 'description')}),
             ('완료 여부', {'fields': ('done', )}),
             ('사인', {'fields': ('signature',)}),
             ('수정 이유', {'fields': ('modify_reason',)}),

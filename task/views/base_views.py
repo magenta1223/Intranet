@@ -16,20 +16,7 @@ from utils import *
 
 
 @login_required(login_url='common:login')
-def detail(request, wrapper_id):
-    """
-    estimator detail
-    """
-    wrapper = get_object_or_404(Wrapper, pk=wrapper_id)
-    estimator = wrapper.estimator
-    categories = Category.objects.all()
-    context = {'categories': categories, 'estimator' : estimator}
-
-    return render(request, 'task/estimator_detail.html', context)
-
-
-@login_required(login_url='common:login')
-def multi_index(request):
+def container_index(request):
     """
     estimator list
     """
@@ -62,7 +49,7 @@ def multi_index(request):
 
 
 @login_required(login_url='common:login')
-def multi_detail(request, wrapper_id):
+def container_detail(request, wrapper_id):
     """
     estimator detail
     """
@@ -74,3 +61,8 @@ def multi_detail(request, wrapper_id):
     print(container.estimator_set.all()[0].total)
 
     return render(request, 'task/container_detail.html', context)
+
+
+
+
+

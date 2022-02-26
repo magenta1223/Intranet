@@ -57,16 +57,33 @@ document.addEventListener('DOMContentLoaded', function() {
             var description = info.event.extendedProps.description;
             var start = moment(info.event.start).format('YYYY/MM/DD');
             var end = moment(info.event.end).subtract(1, 'minutes').format('YYYY/MM/DD');
+            var content = '';
 
+            content = content + '<div class = "ct" style="border-top-color:'+info.event.backgroundColor+'!important" >'
+            content = content + '<div class = "ct-content" style = "font-size:16px;margin-top:10px;">' + info.event.title + '</div>'
+            content = content + '<div class = "ct-content" style = "font-size:12px;">' + start + ' ~ ' + end + ' </div><br>';
+            content = content + '<div class = "ct-content" style = "font-size:14px;"> <i class="fa-solid fa-user"></i>&nbsp;&nbsp; ' + users + '</div>';
+            
+            if (info.event.extendedProps.type.includes('휴가')){
+                content = content + '<div class = "ct-content" style = "font-size:14px;">' + info.event.extendedProps.type + '</div>'
+
+            } else {
+                content = content + '<div class = "ct-content" style = "font-size:14px;">  <div class = "circle" style="background-color:'+info.event.backgroundColor+';float:left;"></div> &nbsp;&nbsp;&nbsp;' + info.event.extendedProps.type + '</div>'
+
+            }
+            content = content + '<div class = "ct-content">' + description + '</div><br>'
+            content = content + '<div style = "height:10px;"> . </div></div>'
+            
             tippy(info.el, {
                 appendTo: document.body,
                 placement: 'bottom',
                 animation: 'fade',
-                theme: 'light',
+                theme: 'transparent',
                 trigger: 'click',
                 allowHTML: true,
                 interactive: false,
-                content: '<div> [담당자] ' + users + '</div><br><div> [내용] ' + description + '</div><br><div> [기간] ' + start + ' ~ ' + end + ' </div>', //info.event.extendedProps.description
+                arrow : false,
+                content: content
 
             
             }); // tippy end
@@ -86,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     backgroundColor: event.color,
                     borderColor : event.color,
                     title: event.title,
+                    type: event.type,
                     start: event.start,
                     end: event.end,
                     allDay : event.allday,//event.allday,

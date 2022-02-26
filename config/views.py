@@ -1,9 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from bulletinboard.models import Category
 from event.models import *
-from event.utils import *
+from utils import *
 from django.db.models import Q
-from event.models import *
 import json
 
 
@@ -32,6 +31,7 @@ def landing(request):
     vac_colors_json = json.dumps(vac_colors)
     task_colors_json = json.dumps(task_colors)
 
+    print(vacations)
 
     context = {'categories' : categories,
                'vacations' : vacations,
