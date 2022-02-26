@@ -187,10 +187,16 @@ $(document).ready(function(){
 
                         structure = structure + '<div class="form-group">' ;
                         structure = structure + '<label for="' + kwarg.text + '">' + kwarg.text + '</label>';
+                        structure = structure + '<div class="input-group mb-3">'; // 인풋그룹용 추가
                         structure = structure + '<input id = "' + i  + '" type="' + kwarg.type + '" class="form-control" name="' + kwarg.text + '"rows="10" value="' + kwarg.value + '" min="' + kwarg.min + '" max="' + kwarg.max + '">';
-                        structure = structure + '</div>'
+                        structure = structure + '<div class="input-group-append">'
+                        structure = structure + '<span class="input-group-text">' + kwarg.unit  + '</span>'
+                        structure = structure + '</div></div>'
 
                         structure = $(structure);
+
+
+
 
                         $(modal_last).before(structure);
                         };
@@ -225,7 +231,7 @@ $(document).ready(function(){
         structure = structure + '<form id="' + estimator_count + '" method="POST">'
         // 값의 임시 저장을 위한 hidden form
         $(modal_btn).parents(".modal-content").find("input[name!='csrfmiddlewaretoken']").each(function(){
-            structure = structure +  '<input hidden id="' + $(this).prop('id') + '" class = "' + $(this).prop('class') +'" value="' + $(this).val() + '" min = "' + $(this).prop('min') + '" max = "'+ $(this).prop('max') + '" name ="'+ $(this).prop('name') + '" type = "' + $(this).prop('type') + '">'
+            structure = structure +  '<input hidden id="' + $(this).prop('id') + '" class = "' + $(this).prop('class') +'" value="' + $(this).val() + '" min = "' + $(this).prop('min') + '" max = "'+ $(this).prop('max') + '" name ="'+ $(this).prop('name') + '" type = "' + $(this).prop('type') + '" data-unit = "'+$(this).parent('div').find('span').text()+ ' ">'
             });
         structure = structure + '<div hidden>' + $(modal_btn).parents(".modal-content").find('#type').val() +'</div>'
         structure = structure + '</form>'
@@ -266,8 +272,13 @@ $(document).ready(function(){
                 var name = $(values[i]).prop('name')
                 structure = structure + '<div class="form-group">' ;
                 structure = structure + '<label for="' + name + '">' + name + '</label>';
+                structure = structure + '<div class="input-group mb-3">'; // 인풋그룹용 추가
                 structure = structure + value.outerHTML.replace('hidden', '');
-                structure = structure + '</div>';
+                structure = structure + '<div class="input-group-append">'
+                structure = structure + '<span class="input-group-text">' +  $(value).attr('data-unit')  + '</span>'
+                structure = structure + '</div></div>';
+
+
                 structure = $(structure)
                 modal_last.before(structure);
                 }
@@ -296,12 +307,15 @@ $(document).ready(function(){
         structure = structure + '<div class="form-group">' ;
         structure = structure + '<label for="' + name + '">' + name + '</label>';
         structure = structure + '<input id = "add-' + additional_count  + '" type="number" class="form-control" name="' + name + '"rows="10" value="' + val + '" min="0">';
+        structure = structure + '<a href="#" class="delete" id = "delete'+ additional_count +'"><small> 삭제 </small> </a>'
         structure = structure + '</div>'
         
 
         modal_last.before(structure);
         additional_modal.modal('hide');
-        
+        $('#delete'+ additional_count).on("click", function() {
+            $(this).parent('div').remove();
+            });
         
 
         });
@@ -363,6 +377,7 @@ function parse_forms(form) {
             var additional_dict = {};
             additional_dict['name'] = $(children[i]).prop('name');
             additional_dict['value'] = $(children[i]).val();
+            additional_dict['unit'] = $(children[i]).attr('data-unit');
 
             dict[ $(children[i]).prop('id') ] = additional_dict;
     }

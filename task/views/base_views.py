@@ -71,4 +71,6 @@ def multi_detail(request, wrapper_id):
     categories = Category.objects.all()
     context = {'categories': categories, 'container' : container}
 
+    print(container.estimator_set.all()[0].total)
+
     return render(request, 'task/container_detail.html', context)

@@ -26,9 +26,9 @@ class Event(models.Model):
     @property
     def allday(self):
         if self.end.date() - self.start.date():
-            return 'true'
+            return True
         else:
-            return 'false'
+            return False
 
 class VacationConfig(models.Model):
     name = models.CharField(max_length=30)

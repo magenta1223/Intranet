@@ -19,10 +19,10 @@ def is_authenticated(request, cat_name, view_name):
 
 def download(request, file_path, file_name):
     # local (window)
-    #parent_folder = file_path.split('/')[0]
+    parent_folder = file_path.split('/')[0]
 
     # server (linux based server)
-    parent_folder = file_path.replace(file_name, '')
+    #parent_folder = file_path.replace(file_name, '')
 
     file_name = urllib.parse.quote(file_name.encode('utf-8'))
     response = HttpResponse(open(file_path, 'rb'), content_type=mimetypes.guess_type(file_path)[0])

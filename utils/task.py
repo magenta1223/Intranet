@@ -88,7 +88,7 @@ def calc_closet(estimator):
 
     total = shelves + walls + back + doors
 
-    return {'선반 가격' : shelves, '세로 벽 가격' : walls, '뒷판 가격' : back, '문 가격' : doors, '총합' : total}
+    return {'선반' : [int(shelves), num_shelves+1], '세로 벽' :[ int(walls), num_vertical_bar + 2], '뒷판' : [int(back), 1], '문' : [int(doors), num_doors]}
 
 
 
@@ -113,12 +113,14 @@ def render_estimator_base(sheet, estimator, container):
     # 각 항목별 값 채우기
     i = 0
     for k, v in estimator.prices.items():
+        print(k, v)
         if k == 'total':
             continue
-        sheet[f'E{19 + i * 3}'].value = k
-        sheet[f'J{19 + i * 3}'].value = v
-        # load_ws[f'L{14 + i * 3}'].value = 수량인데 일단은 없자낭..
-        sheet[f'M{19 + i * 3}'].value = v
+        sheet[f'E{19 + i * 3}'].value = k # 이름
+        if v[1]:
+            sheet[f'J{19 + i * 3}'].value = v[0] // v[1] # 개당 가격
+        sheet[f'L{19 + i * 3}'].value = v[1] #수량인데 일단은 없자낭..
+        sheet[f'M{19 + i * 3}'].value = v[0] # 총 가격
 
         # 하단 테두리
         for j in range(4, 15):
@@ -130,7 +132,6 @@ def render_estimator_base(sheet, estimator, container):
         for k, v in estimator.additional_kwargs.items():
             sheet[f'E{19 + i * 3}'].value = k
             sheet[f'J{19 + i * 3}'].value = v
-            # load_ws[f'L{14 + i * 3}'].value = 수량인데 일단은 없자낭..
             sheet[f'M{19 + i * 3}'].value = v
 
             # 하단 테두리

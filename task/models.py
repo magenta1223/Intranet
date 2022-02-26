@@ -40,12 +40,16 @@ class Estimator(models.Model):
     container = models.ForeignKey(EstimatorContainer, on_delete = models.CASCADE, null = True, blank = True)
 
 
-
     def __str__(self):
         return self.name
+        
     class Meta:
         verbose_name_plural = '견적서'
         verbose_name = '견적서'
+
+    @property
+    def total(self):
+        return sum(  [ v[0] for k, v in self.prices.items()]  ) + sum(self.additional_kwargs.values())
 
 
 class EstimatorType(models.Model):

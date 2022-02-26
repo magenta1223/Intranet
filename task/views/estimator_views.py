@@ -70,6 +70,8 @@ def estimator_add(request):
 
     kwargs = e_type.kwargs
 
+    print(kwargs)
+
     categories = to_json(Category.objects.all())
     types = to_json(EstimatorType.objects.all())
     context = {'categories' : categories, 'types' : types, 'kwargs' : kwargs}
@@ -114,7 +116,7 @@ def estimator_create(request):
         # 근데 보여줄 때는 name으로 보여줘야 한다
         
         kwargs = { _k : int(_v['value']) for _k, _v in v.items() if 'add' not in _k}
-        estimator.kwargs = { _v['name'] : int(_v['value']) for _k, _v in v.items() if 'add' not in _k}
+        estimator.kwargs = { _v['name'] : f"{int(_v['value'])} {_v['unit']}"  for _k, _v in v.items() if 'add' not in _k}
         estimator.additional_kwargs = {_v['name'] : int(_v['value']) for _k, _v in v.items() if 'add' in _k}
 
         # func_dict에서 가져와서 쓰도록

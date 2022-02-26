@@ -8,7 +8,7 @@
 
     <!--CSS CDN-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css"
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     <link rel="stylesheet"  href="{% static 'style.css' %}">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css">
@@ -23,6 +23,8 @@
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"></script>
     <script src="/static/utils.js"></script>
+    <script src="/static/calendar.js"></script>
+    <!--<script src="/static/canvas.js"></script> -->
 
 
 
@@ -59,8 +61,8 @@
           width: 80% !important;
         }
         .fc-toolbar-chunk {
-          display: flex; // 일렬로 나란히
-          align-items: center; // 수직 가운데 정렬
+          display: flex; /* 일렬로 나란히 */
+          align-items: center; /* 일렬로 나란히 */
         }
 
 
@@ -70,7 +72,6 @@
         button.fc-prev-button.btn.btn-primary{
         border-radius: 30px;
         background-color: #ffffff!important;
-        text-color: #000000!important;
         border-color: #DCDCDC!important;
         }
         button.fc-next-button.btn.btn-primary{
@@ -110,7 +111,6 @@
         .fc-direction-ltr .fc-toolbar > .fc-toolbar-chunk {
             margin-top:10px;
         }
-
 
         @media(max-width: 700px) {
 

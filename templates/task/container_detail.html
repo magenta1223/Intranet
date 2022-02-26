@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load bulletinboard_filter %}
+
 <div class="container my-3">
     <!-- 사용자오류 표시 -->
     {% if messages %}
@@ -26,15 +28,57 @@
     <div class="card my-3">
 
         <div class="card-body">
-            {% for key, value in estimator.kwargs.items %}
-            <div class="card-text" style="white-space: pre-line;">{{ key|safe }} : {{ value|safe }}</div>
-            {% endfor %}
-            {% for key, value in estimator.additional_kwargs.items %}
-            <div class="card-text" style="white-space: pre-line;">{{ key|safe }} : {{ value|safe }}</div>
-            {% endfor %}
-            {% for key, value in estimator.prices.items %}
-            <div class="card-text" style="white-space: pre-line;">{{ key|safe }} : {{ value|safe }}</div>
-            {% endfor %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col"> 항목 </th>
+                    <th scope="col"> 가격 </th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in estimator.prices.items %}
+                    <tr>
+                        <td>{{ key|safe }}</td>
+                        <td>{{ value|indexing:0 }} 원</td>
+                    </tr>                    
+                    {% endfor %}
+
+                    {% for key, value in estimator.additional_kwargs.items %}
+                    <tr>
+                        <td>{{ key|safe }}</td>
+                        <td>{{ value|safe }} 원</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td> 합계 </td>
+                        <td>{{estimator.total}} 원</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="option{{estimator.id}}" class="collapse"> 
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col"> 옵션 </th>
+                        <th scope="col"> 값 </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, value in estimator.kwargs.items %}
+                        <tr>
+                            <td>{{ key|safe }}</td>
+                            <td>{{ value|safe }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div> 
+
+            <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#option{{estimator.id}}">옵션 펼치기</button> 
+            
+            
+            
+
             {% if request.user == estimator.author %}
             <!-- <div class="my-3">
                 수정 및 삭제 버튼 
