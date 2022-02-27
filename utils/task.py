@@ -67,8 +67,7 @@ def calc_closet(estimator):
     """
 
     width, depth, height, num_shelves, num_vertical_bar, num_doors  = int(estimator['width']), int(estimator['depth']), int(estimator['height']), int(estimator['num_shelves']), int(estimator['num_vertical_bar']), int(estimator['num_doors'])
-
-
+    quantity = estimator['quantity']
     unit_price_dict = {
         'shelves': 15000,
         'walls': 60000 if height > 2000 else 45000,
@@ -88,7 +87,7 @@ def calc_closet(estimator):
 
     total = shelves + walls + back + doors
 
-    return {'선반' : [int(shelves), num_shelves+1], '세로 벽' :[ int(walls), num_vertical_bar + 2], '뒷판' : [int(back), 1], '문' : [int(doors), num_doors]}
+    return {'선반' : [int(shelves), num_shelves+1], '세로 벽' :[ int(walls), num_vertical_bar + 2], '뒷판' : [int(back), 1], '문' : [int(doors), num_doors], '수량' : [quantity, quantity]}
 
 
 
@@ -113,8 +112,8 @@ def render_estimator_base(sheet, estimator, container):
     # 각 항목별 값 채우기
     i = 0
     for k, v in estimator.prices.items():
-        print(k, v)
-        if k == 'total':
+        
+        if k in ['total', '수량']:
             continue
         sheet[f'E{19 + i * 3}'].value = k # 이름
         if v[1]:
@@ -155,12 +154,19 @@ def render_estimator_base(sheet, estimator, container):
     # 합계
     sheet[f'E{19 + i * 3}'].value = '합계'
     sheet[f'E{20 + i * 3}'].value = 'VAT'
-    sheet[f'E{24 + i * 3}'].value = '총 금액'
+    sheet[f'E{23 + i * 3}'].value = '합계'
+
+    sheet[f'J{19 + i * 3}'].value = f'=SUM(M14:M{16 + i * 3})'
+    sheet[f'J{20 + i * 3}'].value = f'=J{19 + i * 3} / 10'
+
+    sheet[f'L{19 + i * 3}'].value = estimator.prices['수량'][0]
+    sheet[f'L{20 + i * 3}'].value = estimator.prices['수량'][0]
+
+    sheet[f'M{19 + i * 3}'].value = f'=J{19 + i * 3} * L{19 + i * 3}'
+    sheet[f'M{20 + i * 3}'].value = f'=J{20 + i * 3} * L{20 + i * 3}'
 
     # 수식할당
-    sheet[f'M{19 + i * 3}'].value = f'=SUM(M14:M{16 + i * 3})'
-    sheet[f'M{20 + i * 3}'].value = f'=M{19 + i * 3} / 10'
-    sheet[f'M{24 + i * 3}'].value = f'=M{19 + i * 3} + M{20 + i * 3}'
+    sheet[f'M{23 + i * 3}'].value = f'=M{19 + i * 3} + M{20 + i * 3}'
 
 
 def render_container(container):

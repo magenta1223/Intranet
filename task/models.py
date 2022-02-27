@@ -14,6 +14,7 @@ class EstimatorContainer(models.Model):
     modify_date = models.DateTimeField(verbose_name= '수정일자',null=True, blank=True)
 
     name = models.CharField(verbose_name = '견적서 뭉치 명', max_length= 200, null=True)
+    customer = models.CharField(verbose_name = '고객사', max_length= 200, null=True)
 
     class Meta:
         verbose_name_plural = '견적서 뭉치'
@@ -49,8 +50,26 @@ class Estimator(models.Model):
 
     @property
     def total(self):
-        return sum(  [ v[0] for k, v in self.prices.items()]  ) + sum(self.additional_kwargs.values())
+        price_base = sum(  [ v[0] for k, v in self.prices.items() if k != '수량']  )
+        price_additional = sum(self.additional_kwargs.values())
+        return self.prices['수량'][0] * (price_base + price_additional)
+    
+    @property
+    def vat(self):
+        return self.total // 10
 
+    @property
+    def aggregate(self):
+        price_base = sum(  [ v[0] for k, v in self.prices.items() if k != '수량']  )
+        price_additional = sum(self.additional_kwargs.values())
+        
+        price = price_base + price_additional
+        total = self.prices['수량'][0] * price
+        vat = total // 10
+        final = total + vat
+        
+        return {'개별 가격' : price, '합계' : total, 'VAT' : vat, '최종가격' : final}
+    
 
 class EstimatorType(models.Model):
     type = models.CharField(max_length= 30)

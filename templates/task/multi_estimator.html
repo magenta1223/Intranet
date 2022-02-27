@@ -7,13 +7,14 @@
     <div class="card my-3">
         <div class="d-flex justify-content-end" style = "margin-right:20px;">
             <div class="card-body">
-                <div class="card-text" style="white-space: pre-line;">내용 텟트</div>
+                <div class="form-group">
+                    <label for = "customer_name"> 고객사 명 </label>
+                    <input class="form-control" type="text" id = "customer_name" >
+                </div>
             </div>        
-            <div class="my-3">
-                <a href="#" class="btn btn-sm btn-outline-secondary">수정</a>
-                <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="#">삭제</a>
-            </div>
+
         </div>
+        
     </div>
 
 
@@ -85,7 +86,7 @@
 
             <div class="modal-footer">
                 <button type="button" id = "add-button" class="btn btn-info" data-toggle="modal" data-target="#modal-additional" >추가 항목 작성 &nbsp;<span style="font-size:16px; font-weight:bold;">+ </span></button>
-                <button id = "submit-modal" type='button' class="btn btn-primary" style = "margin-left: auto !important;">제출하기</button>
+                <button id = "submit-modal" type='button' class="btn btn-primary" style = "margin-left: auto !important;">저장하기</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
             </div>
         </div>
@@ -202,6 +203,20 @@ $(document).ready(function(){
                         };
 
                     }
+                var structure = '';
+
+                structure = structure + '<div class="form-group">' ;
+                structure = structure + '<label for="quantity">수량</label>';
+                structure = structure + '<div class="input-group mb-3">'; // 인풋그룹용 추가
+                structure = structure + '<input id = "quantity" type="number" class="form-control" name="수량"rows="10" value="1" min="1" max="100">';
+                structure = structure + '<div class="input-group-append">'
+                structure = structure + '<span class="input-group-text">개</span>'
+                structure = structure + '</div></div>'
+
+                structure = $(structure);
+
+                $(modal_last).before(structure);
+
                 },
             error : function(){
                 console.log('error');
@@ -348,7 +363,7 @@ $(document).ready(function(){
             parsed_forms[i] =  parse_forms(all_forms[i])
             }    
 
-        var param = {'data' : JSON.stringify(parsed_forms), 'csrfmiddlewaretoken' : '{{csrf_token}}'}
+        var param = {'data' : JSON.stringify(parsed_forms), 'csrfmiddlewaretoken' : '{{csrf_token}}', 'customer' : $('#customer_name').val()}
 
         $.ajax({
             url : "{% url 'task:estimator_create' %}",
@@ -372,7 +387,6 @@ $(document).ready(function(){
 function parse_forms(form) {
     var dict = {};
     var children = $(form).children('input');
-    console.log(children);
     for (var i = 0; i < children.length; i ++){
             var additional_dict = {};
             additional_dict['name'] = $(children[i]).prop('name');
@@ -385,7 +399,6 @@ function parse_forms(form) {
 
 
     dict['type'] = $(form).children('div').text();
-    console.log(dict);
     return dict
 
     }   

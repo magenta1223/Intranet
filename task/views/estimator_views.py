@@ -57,7 +57,6 @@ def estimator_add(request):
 
     kwargs = e_type.kwargs
 
-    print(kwargs)
 
     categories = to_json(Category.objects.all())
     types = to_json(EstimatorType.objects.all())
@@ -80,11 +79,13 @@ def estimator_create(request):
     """
 
     data = json.loads(request.POST.dict()['data'])
+    customer = request.POST.dict()['customer']
     
     container = EstimatorContainer(
         author = request.user,
         create_date = timezone.now(),
-        name = 'test'
+        name = 'test',
+        customer = customer
     )
     
     container.save()
@@ -98,7 +99,7 @@ def estimator_create(request):
         )
 
         del v['type']
-
+        
         # key값을 유지해야함
         # 근데 보여줄 때는 name으로 보여줘야 한다
         
@@ -108,8 +109,11 @@ def estimator_create(request):
 
         # func_dict에서 가져와서 쓰도록
         prices = FUNC_DICT[estimator.type](kwargs)
+        print(prices)
         estimator.prices = prices
         estimator.save()
+
+        # prices에 수량, 개별 가격, 총합계
 
 
         container.estimator_set.add(estimator)

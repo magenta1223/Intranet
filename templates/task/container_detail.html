@@ -23,10 +23,14 @@
         <h6 style="font-size:12px;display: inline-block;">{{ container.create_date }}</h6>
         {% endif %}
     </div>
-
-    {% for estimator in container.estimator_set.all %}
+    
     <div class="card my-3">
+        <div class="card-body"> <!-- div에 스타일 적용 -->
+            <!-- post 내용 -->
+            <div class="card-text" style="white-space: pre-line;"> 고객사 : {{container.customer}}</div>
+        </div>
 
+        {% for estimator in container.estimator_set.all %}
         <div class="card-body">
             <table class="table">
                 <thead>
@@ -39,7 +43,7 @@
                     {% for key, value in estimator.prices.items %}
                     <tr>
                         <td>{{ key|safe }}</td>
-                        <td>{{ value|indexing:0 }} 원</td>
+                        <td>{{ value|parse:key }}</td>
                     </tr>                    
                     {% endfor %}
 
@@ -49,10 +53,13 @@
                         <td>{{ value|safe }} 원</td>
                     </tr>
                     {% endfor %}
+                    {% for key, value in estimator.aggregate.items %}
                     <tr>
-                        <td> 합계 </td>
-                        <td>{{estimator.total}} 원</td>
+                        <td>{{ key|safe }}</td>
+                        <td>{{ value|safe }} 원</td>
                     </tr>
+                    {% endfor %}
+
                 </tbody>
             </table>
             <div id="option{{estimator.id}}" class="collapse"> 
@@ -75,10 +82,6 @@
             </div> 
 
             <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#option{{estimator.id}}">옵션 펼치기</button> 
-            
-            
-            
-
             {% if request.user == estimator.author %}
             <!-- <div class="my-3">
                 수정 및 삭제 버튼 
@@ -89,11 +92,8 @@
             </div>-->
             {% endif %}
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-
-
-
     <div>
         <a href = "{% url 'task:container_download' container.id %}"> 엑셀로 내려받기 </a>
     </div>
