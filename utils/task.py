@@ -110,8 +110,8 @@ def render_estimator_base(sheet, estimator, container):
     sheet['E5'] = estimator.type
 
     # 각 항목별 값 채우기
-    i = 0
-    for k, v in estimator.prices.items():
+    
+    for i, (k, v) in enumerate(estimator.prices.items()):
         
         if k in ['total', '수량']:
             continue
@@ -125,7 +125,6 @@ def render_estimator_base(sheet, estimator, container):
         for j in range(4, 15):
             sheet[f'{ascii_uppercase[j]}{20 + i * 3}'].border = border1
 
-        i += 1
 
     if estimator.additional_kwargs:
         for k, v in estimator.additional_kwargs.items():
@@ -152,7 +151,7 @@ def render_estimator_base(sheet, estimator, container):
         sheet[f'{ascii_uppercase[j]}{21 + i * 3}'].border = border3
 
     # 합계
-    sheet[f'E{19 + i * 3}'].value = '합계'
+    sheet[f'E{19 + i * 3}'].value = '개별 가격'
     sheet[f'E{20 + i * 3}'].value = 'VAT'
     sheet[f'E{23 + i * 3}'].value = '합계'
 
@@ -169,20 +168,76 @@ def render_estimator_base(sheet, estimator, container):
     sheet[f'M{23 + i * 3}'].value = f'=M{19 + i * 3} + M{20 + i * 3}'
 
 
+def aggregate(aggregates, sheet, container, estimators):
+    
+
+    border1 = Border(bottom=Side(border_style='medium', color=rgb2hex([176, 176, 176])))
+    border2 = Border(bottom=Side(border_style='medium', color=rgb2hex([120, 120, 120])))
+    border3 = Border(bottom=Side(border_style='thick', color=rgb2hex([255, 192, 0])))
+
+    # estimator information
+    sheet['B9'] = container.id
+    sheet['B12'] = container.author.name
+    sheet['B15'] = container.create_date.strftime('%Y-%m-%d %H:%M:%S')
+    sheet['E5'] = container.id
+
+    
+    for i, (aggregate, estimator) in enumerate(zip(aggregates, estimators)):
+        print(aggregate)
+        price = aggregate['합계']
+        quantity = aggregate['수량']
+        total = aggregate['최종가격']
+
+        sheet[f'E{19 + i * 3}'].value =  estimator.type # 이름
+        sheet[f'J{19 + i * 3}'].value = price # 개당 가격
+        sheet[f'L{19 + i * 3}'].value = quantity #수량인데 일단은 없자낭..
+        sheet[f'M{19 + i * 3}'].value = f'=J{19 + i * 3} * L{19 + i * 3}'  # 총 가격
+        
+        # 하단 테두리
+        for j in range(4, 15):
+            sheet[f'{ascii_uppercase[j]}{20 + i * 3}'].border = border1
+
+    # 하단 테두리
+    for j in range(4, 15):
+        sheet[f'{ascii_uppercase[j]}{20 + i * 3}'].border = border2
+    # 다음 세칸
+    i += 1
+
+    # 하단 테두리
+    for j in range(4, 15):
+        sheet[f'{ascii_uppercase[j]}{21 + i * 3}'].border = border3
+
+
+    # 합계
+    sheet[f'E{19 + i * 3}'].value = '합계'
+
+    sheet[f'J{19 + i * 3}'].value = f'=SUM(M14:M{16 + i * 3})'
+
+
+
+
+
 def render_container(container):
     file_path = os.path.join(BASE_DIR, 'data/invoice_template.xlsx')
     template = load_workbook(file_path)
 
-    sheet_origin = template['Sheet2']
+    sheet_overall = template['Sheet1']
+    sheet_product = template['Sheet2']
 
-    
+    aggregates = []
+    estimators = container.estimator_set.all()
 
-    for i, estimator in enumerate(container.estimator_set.all()):
-        sheet = template.copy_worksheet(sheet_origin)
+
+    for i, estimator in enumerate(estimators):
+        sheet = template.copy_worksheet(sheet_product)
         sheet.title = f'title {i}'
         render_estimator_base(sheet, estimator, container)
+        aggregates.append(estimator.aggregate)
 
-    
+
+    sheet_overall.title = 'test'
+    aggregate(aggregates, sheet_overall, container, estimators)
+    template.remove(template['Sheet2'])    
 
     # 저장
     file_path = os.path.join(BASE_DIR, f'data/{container.name}.xlsx')

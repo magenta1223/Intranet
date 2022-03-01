@@ -109,7 +109,6 @@ def estimator_create(request):
 
         # func_dict에서 가져와서 쓰도록
         prices = FUNC_DICT[estimator.type](kwargs)
-        print(prices)
         estimator.prices = prices
         estimator.save()
 

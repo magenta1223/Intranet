@@ -13,3 +13,11 @@ def parse(value, key):
         return f'{value[0]} 개'
     else:
         return f'{value[0]} 원'
+
+
+@register.filter
+def parse2(value, key):
+    if key == '수량':
+        return f'{value} 개'
+    else:
+        return f'{value} 원'

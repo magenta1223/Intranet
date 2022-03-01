@@ -49,26 +49,18 @@ class Estimator(models.Model):
         verbose_name = '견적서'
 
     @property
-    def total(self):
-        price_base = sum(  [ v[0] for k, v in self.prices.items() if k != '수량']  )
-        price_additional = sum(self.additional_kwargs.values())
-        return self.prices['수량'][0] * (price_base + price_additional)
-    
-    @property
-    def vat(self):
-        return self.total // 10
-
-    @property
     def aggregate(self):
         price_base = sum(  [ v[0] for k, v in self.prices.items() if k != '수량']  )
         price_additional = sum(self.additional_kwargs.values())
         
         price = price_base + price_additional
-        total = self.prices['수량'][0] * price
-        vat = total // 10
-        final = total + vat
+        vat = price // 10
+        price2 = price + vat
+        total = self.prices['수량'][0] * price2
+        #vat = total // 10
+        #final = total + vat
         
-        return {'개별 가격' : price, '합계' : total, 'VAT' : vat, '최종가격' : final}
+        return {'개별 가격' : price, 'VAT' : vat, '합계' : price2,  '수량' : self.prices['수량'][0],  '최종가격' : total}
     
 
 class EstimatorType(models.Model):
