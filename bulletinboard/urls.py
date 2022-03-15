@@ -9,7 +9,8 @@ urlpatterns = [
     path('<int:wrapper_id>/', base_views.detail, name='detail'), # 순서 바꾸면 안됨. 기본적으로 문자로 인식해서 cat_index로 들어가버림
     path('<str:cat_name>/', base_views.cat_index, name='cat_index'),
 
-    path('post/create/', post_views.post_create, name='post_create'),
+
+    path('post/create/<str:category>', post_views.post_create, name='post_create'),
     path('post/modify/<int:post_id>/', post_views.post_modify, name='post_modify'),
     path('post/delete/<int:post_id>/', post_views.post_delete, name='post_delete'),
 

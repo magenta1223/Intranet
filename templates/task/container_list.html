@@ -35,7 +35,7 @@
                 {{ container_list.paginator.count|sub:container_list.start_index|sub:forloop.counter0|add:1 }}
             </td>
             
-            <td class="text-left">
+            <td class="text-left" style="width:90%">
                 <a href="{% url 'task:container_detail' container.wrapper.id %}">{{ container.name }}</a>
                 {% if container.wrapper.reply_set.count > 0 %}
                 <span class="text-danger small ml-2">{{ container.wrapper.reply_set.count }}</span>

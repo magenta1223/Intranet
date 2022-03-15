@@ -49,6 +49,7 @@ class Post(models.Model):
     title = models.CharField(verbose_name= '제목',max_length=200)
     content = RichTextUploadingField(verbose_name='내용')
     category = models.ForeignKey(Category, verbose_name= '카테고리', on_delete=models.CASCADE, null = True, blank = True)
+    notice = models.BooleanField(verbose_name= "상단고정게시물", null=True, blank=True)
 
     def __str__(self):
         return self.title

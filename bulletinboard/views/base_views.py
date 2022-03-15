@@ -85,12 +85,7 @@ def cat_index(request, cat_name):
     bulletinboard 목록 출력
     Todo:
     category view를 기본으로 설정
-    권한 체크
-
-    Done:
-    category별 게시판 출력
-    landing page제작, 상단 navigation bar를 통해 넘어옴
-
+    상단 고정 게시물만 따로 모아서 쏴야됨
     """
     # 입력 파라미터
     page = request.GET.get('page', '1')  # 페이지
@@ -107,9 +102,16 @@ def cat_index(request, cat_name):
 
     # permission check
     if is_authenticated(request, cat_name, view_name) or is_authenticated(request, cat_name, 'create'):
-
         # 글 목록조회
         post_list = Post.objects.order_by('-create_date')
+
+        # fixed_on_top
+        fixed_posts = post_list.filter( notice = True ) # fixed posts를 지정, 저장 가져오기
+        print(fixed_posts)
+
+        for post in post_list:
+            print(post.notice, type(post.notice))
+        
 
         # 검색
         if kw:
@@ -128,7 +130,7 @@ def cat_index(request, cat_name):
         paginator = Paginator(post_list, 10)  # 페이지당 10개씩 보여주기
         page_obj = paginator.get_page(page)
 
-        context = {'post_list': page_obj, 'page': page, 'kw': kw, 'categories' : categories, 'cat_destination' : cat_destination}
+        context = {'fixed_posts' : fixed_posts, 'post_list': page_obj, 'page': page, 'kw': kw, 'categories' : categories, 'cat_destination' : cat_destination}
 
         return render(request, 'bulletinboard/post_list_cat.html', context)
 

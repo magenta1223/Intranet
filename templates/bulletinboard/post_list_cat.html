@@ -19,15 +19,27 @@
 
     <!-- 테이블 시작 -->
     <table class="table">
-        <!-- 테이블 헤드 -->
-        <thead>
-        <tr class="thead-dark" align = "center">
-            <th>번호</th>
-            <th style="width:90%">제목</th>
 
-        </tr>
-        </thead>
         <tbody>
+        {% if fixed_posts %}
+        {% for post in fixed_posts %}
+        <tr class="text-center">
+            <!-- 정보 표시 시작 -->
+            <!-- 번호 표시 -->
+            <td class = "table-info" style = "text-align: center;vertical-align : middle;">
+                <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
+                공지사항
+            </td>
+            <!-- bulletinboard의 urls에서 detail을 실행, post_id를 인수로 넣음
+            post.subject를 출력-->
+            <td class="table-info text-left" style="width:90%">
+                <a href="{% url 'bulletinboard:detail' post.wrapper.id %}">{{ post.title }}</a>
+                <br>
+                <small>{{ post.author.name }} | {{ post.formatted_date }}</small>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
 
         <!-- 질문 목록이 있다면 -->
         {% if post_list %}
@@ -43,7 +55,7 @@
             </td>
             <!-- bulletinboard의 urls에서 detail을 실행, post_id를 인수로 넣음
             post.subject를 출력-->
-            <td class="text-left">
+            <td class="text-left" style="width:90%">
                 <a href="{% url 'bulletinboard:detail' post.wrapper.id %}">{{ post.title }}</a>
                 {% if post.wrapper.reply_set.count > 0 %}
                 <span class="text-danger small ml-2">{{ post.wrapper.reply_set.count }}</span>
@@ -99,7 +111,7 @@
         {% endif %}
     </ul>
     <!-- 페이징처리 끝 -->
-    <a href="{% url 'bulletinboard:post_create' %}" class="btn btn-primary">게시글 등록하기</a>
+    <a href="{% url 'bulletinboard:post_create' cat_destination %}" class="btn btn-primary">게시글 등록하기</a>
 </div>
 
 <!-- page와 kw를 동시에 get으로 요청 가능한 searchform

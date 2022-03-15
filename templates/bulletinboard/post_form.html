@@ -40,12 +40,8 @@ select:invalid { color: gray; }
         <!-- 카테고리 표시 -->
         <div class="form-group">
             <label for="category">카테고리</label>
-            <select class="form-control" name="category" id="category" aria-label=".form-select-lg example" required>
-                <option value= "" disabled selected hidden>카테고리를 선택하세요</option>
-                {% for category in categories%}
-                <option value= {{category}}>{{category}}</option>
-                {% endfor %}
-            </select>
+            <input type="text" class="form-control" name="category" id="category" value="{{category}}" disabled>
+
         </div>
 
         <div class="form-group">
@@ -57,9 +53,31 @@ select:invalid { color: gray; }
             <label for="content">내용</label>
             <textarea class="form-control" name="content" id="content" rows="10">{{ form.content.value|default_if_none:'내용을 입력해주세요' }}</textarea>
         </div>
-        <button type="submit" class="btn btn-primary">저장하기</button>
+        {% if request.user.is_superuser %}
+        <div class = "form-group">
+            <label for="cbox">
+                상단 고정 게시물로 등록하기
+                <input type="checkbox" id = "cbox" name = "cbox">
+            </label>
+        </div>
+        <div class = "form-group" hidden>
+            <label for="notice">
+                <input type="text" id = "notice" name = "notice" value = "False">
+            </label>
+        </div>
+
+        {% endif %}
+
+        <button id="submit" class="btn btn-primary">저장하기</button>
     </form>
+    
+
+
 </div>
+
+
+
+
 
 
 {% endblock %}
@@ -69,5 +87,25 @@ select:invalid { color: gray; }
 <!-- name이 content인 부분에 CKEditor 적용-->
 <script>
     CKEDITOR.replace('content');
+    // remove disabled right before submit
+    $('#submit').click(function(){
+        if ($('#cbox').legnth) {
+            if ($('#cbox').is(":checked")){
+                $('notice').val("True");
+            } else {
+                $('notice').val("False");
+
+            } ;
+        };
+
+        $("#category").removeAttr('disabled')
+    });
+
+    
+
+    
+
+
+
 </script>
 {% endblock %}

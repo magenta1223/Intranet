@@ -11,7 +11,7 @@ from utils import *
 
 
 @login_required(login_url='common:login')
-def post_create(request):
+def post_create(request, category = None):
     """
     create post
 
@@ -39,6 +39,10 @@ def post_create(request):
                 ).distinct()[0]
 
                 # set time
+                print(request.POST['notice'])
+
+                post.notice = bool(request.POST['notice'])
+
                 post.create_date = timezone.now()
                 post.save()
 
@@ -59,7 +63,7 @@ def post_create(request):
         # 처음 접근 시, GET을 사용 (링크를 통한 페이지 요청의 경우 GET을 사용한다)
         form = PostForm()
         categories = Category.objects.all()
-        context = {'form': form, 'categories' : categories}
+        context = {'form': form, 'categories' : categories, 'category' : category}
         return render(request, 'bulletinboard/post_form.html', context)
 
 # 로그인 필요, 안돼 있으면 common:login으로 안내
@@ -102,8 +106,9 @@ def post_modify(request, post_id):
     else:
         form = PostForm(instance=post)
         categories = Category.objects.all()
+    
 
-    context = {'form': form, 'categories' : categories}
+    context = {'form': form, 'categories' : categories, 'category' : post.category}
 
     return render(request, 'bulletinboard/post_form.html', context)
 
