@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
             checkbox[i].addEventListener('change', function() {
                 calendar.refetchEvents();
                 });
-            console.log('added');
+            
         }
     });
 
