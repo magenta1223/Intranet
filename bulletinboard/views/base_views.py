@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from ..models import Post, Category
@@ -79,6 +80,26 @@ def detail(request, wrapper_id):
         return render(request, 'landing.html', context)
 
 
+def paging(post_list, kw, category, page):
+    # 검색
+    if kw:
+        post_list = post_list.filter(
+            Q(title__icontains=kw) |  # title
+            Q(content__icontains=kw) |  # contents
+            Q(author__name__icontains=kw) |  # post author
+            Q(reply__author__name__icontains=kw)  # reply auther
+        ).distinct()
+
+    # 특정 카테고리의 post
+    post_list = post_list.filter(
+            Q(category__name__icontains = category))
+
+    # 페이징처리
+    paginator = Paginator(post_list, 10)  # 페이지당 10개씩 보여주기
+    page_obj = paginator.get_page(page)
+    return page_obj
+
+
 @login_required(login_url='common:login')
 def cat_index(request, cat_name):
     """
@@ -86,51 +107,31 @@ def cat_index(request, cat_name):
     Todo:
     category view를 기본으로 설정
     상단 고정 게시물만 따로 모아서 쏴야됨
+    ajax 페이징 
     """
-    # 입력 파라미터
+
     page = request.GET.get('page', '1')  # 페이지
     kw = request.GET.get('kw', '')  # 검색어
     categories = Category.objects.all()  # 전체 카테고리
 
-    # 클릭한 카테고리
-    cat_destination = categories.filter(
-        Q(name__icontains = cat_name)
-    ).distinct()[0]
 
     # view_name
     view_name = 'view'
 
     # permission check
     if is_authenticated(request, cat_name, view_name) or is_authenticated(request, cat_name, 'create'):
+        
         # 글 목록조회
         post_list = Post.objects.order_by('-create_date')
+        
+        #paging
+        page_obj = paging(post_list, kw, cat_name, page)
+
 
         # fixed_on_top
         fixed_posts = post_list.filter( notice = True ) # fixed posts를 지정, 저장 가져오기
-        print(fixed_posts)
 
-        for post in post_list:
-            print(post.notice, type(post.notice))
-        
-
-        # 검색
-        if kw:
-            post_list = post_list.filter(
-                Q(title__icontains=kw) |  # title
-                Q(content__icontains=kw) |  # contents
-                Q(author__name__icontains=kw) |  # post author
-                Q(reply__author__name__icontains=kw)  # reply auther
-            ).distinct()
-
-        # 특정 카테고리의 post
-        post_list = post_list.filter(
-                Q(category__name__icontains = cat_destination.name))
-
-        # 페이징처리
-        paginator = Paginator(post_list, 10)  # 페이지당 10개씩 보여주기
-        page_obj = paginator.get_page(page)
-
-        context = {'fixed_posts' : fixed_posts, 'post_list': page_obj, 'page': page, 'kw': kw, 'categories' : categories, 'cat_destination' : cat_destination}
+        context = {'fixed_posts' : fixed_posts, 'post_list': page_obj, 'page': page, 'kw': kw, 'categories' : categories, 'cat_name' : cat_name}
 
         return render(request, 'bulletinboard/post_list_cat.html', context)
 
@@ -146,3 +147,18 @@ def cat_index(request, cat_name):
 
 
 
+
+def ajax_paging(request):
+    print('cex')
+    data = json.loads(request.POST.dict()['data'])
+
+    print(data)
+
+    page = data.get('page', '1')  # 페이지
+    kw = data.get('kw', '')  # 검색어
+    category = data.get('category')
+    post_list = Post.objects.order_by('-create_date')
+    #page_obj = paging(post_list, kw, category, page)
+
+    #return JsonResponse({'post_list' : page_obj })
+    return JsonResponse({})

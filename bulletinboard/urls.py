@@ -8,6 +8,7 @@ urlpatterns = [
     # 카테고리
     path('<int:wrapper_id>/', base_views.detail, name='detail'), # 순서 바꾸면 안됨. 기본적으로 문자로 인식해서 cat_index로 들어가버림
     path('<str:cat_name>/', base_views.cat_index, name='cat_index'),
+    path('ajax_paging/', base_views.ajax_paging, name='paging'),
 
 
     path('post/create/<str:category>', post_views.post_create, name='post_create'),

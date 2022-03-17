@@ -41,7 +41,9 @@ def post_create(request, category = None):
                 # set time
                 print(request.POST['notice'])
 
-                post.notice = bool(request.POST['notice'])
+                post.notice = request.POST['notice'] == 'True'
+
+                print(post.notice)
 
                 post.create_date = timezone.now()
                 post.save()

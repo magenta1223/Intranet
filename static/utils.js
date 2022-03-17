@@ -24,7 +24,6 @@ $(document).ready(function(){
 
 
 // 검색 및 페이지 이동
-
 $(document).ready(function(){
     $(".page-link").on('click', function() {
         $("#page").val($(this).data("page"));

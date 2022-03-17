@@ -89,13 +89,13 @@ select:invalid { color: gray; }
     CKEDITOR.replace('content');
     // remove disabled right before submit
     $('#submit').click(function(){
-        if ($('#cbox').legnth) {
+        if ($('#cbox').length) {
+            
             if ($('#cbox').is(":checked")){
-                $('notice').val("True");
-            } else {
-                $('notice').val("False");
+                $('#notice').val("True");
+            };
+            console.log($('#notice').val() );
 
-            } ;
         };
 
         $("#category").removeAttr('disabled')
